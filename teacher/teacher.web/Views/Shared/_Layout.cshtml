@@ -1,0 +1,24 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>@ViewBag.Title</title>
+    @RenderSection("styles", required: false)
+    @Styles.Render("~/bundles/commoncss")
+    @Scripts.Render("~/bundles/jquery")
+    <style type="text/css">
+        body {
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    @RenderBody()
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/commonjs")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

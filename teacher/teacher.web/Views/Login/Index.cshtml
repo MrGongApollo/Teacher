@@ -1,0 +1,141 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>用户登录</title>
+    @Styles.Render("~/bundles/commoncss")
+    @Styles.Render("~/bundles/sweetalert/css")
+    @Styles.Render("~/bundles/bootstrap-Validator/css")
+    <style type="text/css">
+        body {position: absolute;top: 0;left: 0;right: 0;bottom: 0;}
+        .container {width: 100%;height: 100%;background: url("@Url.Content("~/Images/login_bg.jpg")") no-repeat center;background-size: 100% 100%;overflow: hidden;}
+        #login-box {margin-top: 10rem;box-shadow: 1px 1px 6px 1px #887b7b;border-radius: 5px;padding: 3rem 1rem;background-color: white;}
+        #Login-logo i.logo {line-height: 10rem;height: 10rem;font-size: 10rem;}
+        #form_login {padding: 1rem;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-md-push-3">
+                <div id="login-box">
+                    <div id="Login-logo" class="row">
+                        <div class="col-md-8 font-yahei">
+                            <h2>欢迎使用</h2>
+                            <h4>请输入您的账号密码登录我们的网站</h4>
+                        </div>
+                        <div class="col-md-4 text-right">
+                            <i class="fa fa-key color-blackgray logo"></i>
+                        </div>
+                    </div>
+                    <form id="form_login" method="post">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-addon bg-blue">
+                                        <i class="fa fa-user color-white"></i>
+                                    </div>
+                                    <input type="text" class="form-control" name="username" id="username" placeholder="请输入用户名.." autocomplete="off" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-addon bg-blue">
+                                        <i class="fa fa-key color-white"></i>
+                                    </div>
+                                    <input type="password" class="form-control" name="password" id="password" placeholder="请输入密码.." autocomplete="off" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-primary btn-block text-center btn-lg" type="submit" disabled>
+                                    登录
+                                </button>
+                            </div>
+                        </form>
+                </div>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-md-push-3">
+                <h3 class="color-white font-yahei text-center">或者使用以下方式登录：</h3>
+            </div>
+            </div>
+        <div class="row">
+            <div class="col-md-6 col-md-push-3 text-center">
+                <button class="btn btn-primary btn-lg">
+                    <i class="fa fa-facebook"></i>
+                    Facebook
+                </button>
+                <button class="btn btn-info btn-lg">
+                    <i class="fa fa-qq"></i>
+                    QQ
+                </button>
+                <button class="btn btn-danger btn-lg">
+                    <i class="fa fa-weibo"></i>
+                    新浪微博
+                </button>
+            </div>
+        </div>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/commonjs")
+    @Scripts.Render("~/bundles/sweetalert/js")
+    @Scripts.Render("~/bundles/bootstrap-Validator/js")
+    <script type="text/javascript">
+        $(function ()
+        {
+            $('#form_login').bootstrapValidator({
+                message: '不合法的值类型',
+                feedbackIcons: {
+                    valid: 'glyphicon glyphicon-ok',
+                    invalid: 'glyphicon glyphicon-remove',
+                    validating: 'glyphicon glyphicon-refresh'
+                },
+                fields: {
+                    username: {
+                        message: '不合法的值类型',
+                        validators: {
+                            notEmpty: {
+                                message: '用户名不可为空'
+                            }
+                        }
+                    },
+                    password: {
+                        validators: {
+                            notEmpty: {
+                                message: '密码不可为空'
+                            },
+                            stringLength: {
+                                min: 6,
+                                max: 15,
+                                message: '密码长度不能小于6大于15'
+                            },
+                        }
+                    }
+                }
+            }).on('success.form.bv', function (e) {
+                e.preventDefault();
+                $.web.post("@Url.Content("~/Login/LoginChecked")", { username: $("#username").val(), password: $("#password").val() }).done(function (xhr) {
+                    var IsValid = xhr.Ret.Key == "success";
+                    swal("登录" + (IsValid ? "成功" : "失败"), xhr.Ret.Value, xhr.Ret.Key);
+                    if (IsValid)
+                    {
+                        setTimeout(function () {
+                            window.location.href = "@Url.Content("~/Home/Index")";
+                        },500);
+                        
+                    }
+                });
+            });
+    });
+    </script>
+</body>
+</html>

@@ -1,0 +1,156 @@
+﻿@{
+    ViewBag.Title = "Wechat";
+}
+
+@section styles{
+@Styles.Render("~/bundles/CodeSeven-toastr/css")
+@Styles.Render("~/Content/index.min.css")
+@Styles.Render("~/bundles/sweetalert/css")
+}
+
+
+@section scripts{
+@Scripts.Render("~/bundles/CodeSeven-toastr/js")
+@Scripts.Render("~/bundles/sweetalert/js")
+<script type="text/javascript">
+    document.weburl = "@(Url.Content("~/"))";
+</script>
+@Scripts.Render("~/Scripts/Index.min.js")
+}
+
+<div id="header" class="header navbar navbar-default navbar-fixed-top">
+    <!-- begin container-fluid -->
+    <div class="container-fluid">
+        <!-- begin mobile sidebar expand / collapse button -->
+        <div class="navbar-header">
+            <a href="javascript:;" id="logo" class="navbar-brand color-white">
+                <span class="navbar-logo"></span>
+                <i class="fa fa-weixin color-lightred"></i> WeChat
+            </a>
+            <button type="button" class="navbar-toggle" data-click="sidebar-toggled">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+        <!-- end mobile sidebar expand / collapse button -->
+        <!-- begin header navigation right -->
+        <ul class="nav navbar-nav navbar-right visible-sm visible-md visible-lg">
+            <li>
+                <div class="navbar-form full-width">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="请输入关键字" autocomplete="off" data-provide="typeahead">
+                        <span class="input-group-btn">
+                            <a role="button" class="btn btn-search btn-info"
+                               href="@Url.Content("~/Common/Share_Search")"
+                               data-ajax-id="Search"
+                               data-ajax-update="#page-main"
+                               data-ajax="true"
+                               data-ajax-success="UpdatePage">
+                                <i class="fa fa-search"></i>
+                            </a>
+                        </span>
+                    </div>
+                </div>
+            </li>
+            <li class="dropdown" id="user_notice">
+                <a href="javascript:;" data-toggle="dropdown" class="dropdown-toggle f-s-14 color-white">
+                    <i class="fa fa-bell-o"></i>
+                    <span class="badge badge-danger">5</span>
+                </a>
+                <ul class="dropdown-menu media-list pull-right animated fadeInDown">
+                    <li class="dropdown-header">5条新的通知</li>
+                    <li class="media">
+                        <a href="javascript:;">
+                            <div class="media-left"><i class="fa fa-bug media-object bg-red"></i></div>
+                            <div class="media-body">
+                                <h6 class="media-heading">xxxxx</h6>
+                                <div class="text-muted f-s-11">3 分钟前</div>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="media">
+                        <a href="javascript:;">
+                            <div class="media-left"><img src="https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2428676430,4161488114&fm=116&gp=0.jpg" class="media-object" alt=""></div>
+                            <div class="media-body">
+                                <h6 class="media-heading">xxxxx</h6>
+                                @*<p>具体内容</p>*@
+                                <div class="text-muted f-s-11">25 分钟前</div>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="media">
+                        <a href="javascript:;">
+                            <div class="media-left"><img src="https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1913246915,2422968925&fm=116&gp=0.jpg" class="media-object" alt=""></div>
+                            <div class="media-body">
+                                <h6 class="media-heading">xxxxx</h6>
+                                @*<p>具体内容</p>*@
+                                <div class="text-muted f-s-11">35 分钟前</div>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="media">
+                        <a href="javascript:;">
+                            <div class="media-left"><i class="fa fa-plus media-object bg-green"></i></div>
+                            <div class="media-body">
+                                <h6 class="media-heading">xxxxx</h6>
+                                <div class="text-muted f-s-11">1 小时前</div>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="media">
+                        <a href="javascript:;">
+                            <div class="media-left"><i class="fa fa-envelope media-object bg-blue"></i></div>
+                            <div class="media-body">
+                                <h6 class="media-heading"> xxxx</h6>
+                                <div class="text-muted f-s-11">2 小时前</div>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="dropdown-footer text-center">
+                        <a href="@Url.Content("~/Common/Share_MsgCenter")"
+                           data-ajax-id="MsgCenter"
+                           data-ajax-update="#page-main"
+                           data-ajax="true"
+                           data-ajax-success="UpdatePage">查看更多</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="dropdown navbar-user">
+                <a href="javascript:;" class="dropdown-toggle color-white" data-toggle="dropdown">
+                    <i class="fa fa-user"></i>
+                    <span class="hidden-xs" id="txt_NickName">加载中..</span> <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu animated fadeInLeft">
+                    <li class="arrow"></li>
+                    <li>
+                        <a href="@Url.Content("~/Common/User_Info")"
+                           data-ajax-id="UserSetting"
+                           data-ajax-update="#page-main"
+                           data-ajax="true"
+                           data-ajax-success="UpdatePage"><i class="fa fa-user"></i>个人信息</a></li>
+                    <li>
+                        <a href="@Url.Content("~/Common/User_Setting")"
+                           data-ajax-id="UserSetting"
+                           data-ajax-update="#page-main"
+                           data-ajax="true"
+                           data-ajax-success="UpdatePage"><i class="fa fa-cog"></i>设置</a></li>
+                    <li class="divider"></li>
+                    <li id="Signout"><a href="javascript:;"><i class="fa fa-sign-out"></i>注销</a></li>
+                </ul>
+            </li>
+        </ul>
+        <!-- end header navigation right -->
+    </div>
+    <!-- end container-fluid -->
+</div>
+<hr id="header_progress" />
+<div class="container-fluid page-center">
+    <div id="left_bar_box"><ul class="nav" id="left_bar"></ul></div>
+    <ol class="breadcrumb bg-default nomargin" id="page-breadcrumb">
+        <li class="active">首页</li>
+    </ol>
+    <div class="content" id="page-main">
+        @{Html.RenderAction("Home", "Home", null);}
+    </div>
+</div>

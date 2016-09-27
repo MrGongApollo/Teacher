@@ -1,0 +1,1 @@
+该插件是基于FontAwsome,bootstrap
