@@ -3,7 +3,7 @@
     $.web.getAsync(document.weburl + "Home/GetCurentUser").done(function (xhr) {
         switch (xhr.Ret.Key) {
             case "success":
-                $("#txt_NickName").text(xhr.Data.UserName);
+                $("#txt_NickName").text(xhr.Data.UserNickName);
                 break;
             case "error":
                 swal("获取用户失败", xhr.Ret.Value, "error");
