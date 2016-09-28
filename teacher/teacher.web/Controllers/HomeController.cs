@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using teacher.Data.Models;
 using teacher.web.Filter;
 
 namespace teacher.web.Controllers
@@ -27,12 +28,11 @@ namespace teacher.web.Controllers
         [HttpGet]
         public ActionResult GetCurentUser()
         {
-            //base.fin_r = base.error_r;
-            //T_SysUser user = Session["User"] as T_SysUser;
-            //user.LoginPsw = "********";
-            //base.fin_r = base.success_r;
-            //return JsonR(user, JsonRequestBehavior.AllowGet);
-            return Content("");
+            base.fin_r = base.error_r;
+            T_User user = Session["User"] as T_User;
+            user.UserPSW = "********";
+            base.fin_r = base.success_r;
+            return JsonR(user, JsonRequestBehavior.AllowGet);
         }
         #endregion
 

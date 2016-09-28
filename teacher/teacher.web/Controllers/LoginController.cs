@@ -39,6 +39,8 @@ namespace teacher.web.Controllers
                         #region 密码正确
                         if (user.UserPSW == new CommonHelper().MD5(password))
                         {
+                            user.LastLoginTime = DateTime.Now;
+                            db.SaveChanges();
                             FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(1, username, DateTime.Now, DateTime.Now.AddMinutes(90),
                true, string.Format("{0}:{1}", username, password), FormsAuthentication.FormsCookiePath);
 
