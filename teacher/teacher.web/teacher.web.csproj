@@ -127,7 +127,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Images\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
@@ -511,6 +510,7 @@
     <Content Include="Content\index.min.less" />
     <Content Include="DataBase\db.db" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Images\login_bg.jpg" />
     <Content Include="Scripts\base.js" />
     <Content Include="Scripts\base.min.js" />
     <Content Include="Scripts\echarts.min.js" />
