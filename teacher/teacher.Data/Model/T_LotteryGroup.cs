@@ -14,19 +14,15 @@ namespace teacher.Data.Models
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
-    [Table("T_SysMenus")]
-    public partial class T_SysMenus
+    [Table("T_LotteryGroup")]
+    public partial class T_LotteryGroup
     {
         [Key]
         [MaxLength(32)]
-        public string MenuId { get; set; }
-        public string MenuName { get; set; }
-        public string MenuIcon { get; set; }
-        public string ParentId { get; set; }
-        public int SortNum { get; set; }
-        public Nullable<int> MenuLevel { get; set; }
-        public string MenuUrl { get; set; }
-        public bool Islink { get; set; }
-        public string ParentMenuName { get; set; }
+        public string LotteryGroupID { get; set; }
+        [MaxLength(200)]
+        public string GroupName { get; set; }
+        public Nullable<System.DateTime> CreateTime { get; set; }
+        public Nullable<System.DateTime> ModifyTime { get; set; }
     }
 }

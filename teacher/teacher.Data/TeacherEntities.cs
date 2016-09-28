@@ -26,6 +26,9 @@ namespace teacher.Data
 
         public DbSet<T_SysMenus> T_SysMenus { get; set; }
         public DbSet<T_User> T_User { get; set; }
+        public DbSet<T_LotteryGroup> T_LotteryGroup { get; set; }
+        public DbSet<T_LotteryResult> T_LotteryResult { get; set; }
+        public DbSet<T_LotteryUsers> T_LotteryUsers { get; set; }
         
     }
 }
