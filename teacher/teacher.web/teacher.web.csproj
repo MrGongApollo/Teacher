@@ -508,7 +508,6 @@
     <Content Include="Content\font-awesome\fonts\fontawesome-webfont.woff2" />
     <Content Include="Content\font-awesome\fonts\FontAwesome.otf" />
     <Content Include="Content\index.min.less" />
-    <Content Include="DataBase\db.db" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Images\login_bg.jpg" />
     <Content Include="Scripts\base.js" />

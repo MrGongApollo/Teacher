@@ -20,6 +20,17 @@ namespace teacher.web.Controllers
         // GET: /Login/
         public ActionResult Index()
         {
+            try
+            {
+                using (TeacherEntities db=new TeacherEntities())
+                {
+                    var aa = db.T_SysMenus.FirstOrDefault();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
             return View();
         }
 
