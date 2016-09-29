@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Microsoft.OData.Edm;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using Microsoft.Data.Edm;
-using System.Web.Http.OData.Builder;
+using System.Web.OData.Builder;
 using teacher.Data.Models;
 
 namespace teacher.web

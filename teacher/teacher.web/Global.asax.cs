@@ -6,8 +6,6 @@ using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
-using System.Web.Http.OData;
-using System.Web.Http.OData.Builder;
 
 namespace teacher.web
 {
@@ -15,6 +13,7 @@ namespace teacher.web
     {
         protected void Application_Start()
         {
+
             WebApiConfig.Register(GlobalConfiguration.Configuration);
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);

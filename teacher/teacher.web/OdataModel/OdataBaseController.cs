@@ -1,15 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using System.Web.Http.ModelBinding;
-using System.Web.Http.OData;
-using System.Web.Http.OData.Routing;
-using teacher.Data.Models;
+﻿using System.Web.OData;
 using teacher.Data;
 
 namespace teacher.web.OdataModel

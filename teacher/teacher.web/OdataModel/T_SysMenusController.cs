@@ -1,22 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Linq;
 using teacher.Data.Models;
-using teacher.web.OdataModel;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using System.Web.Http.ModelBinding;
-using System.Web.Http.OData;
-using System.Web.Http.OData.Routing;
-using System.Web.Http.OData.Query;
+using System.Web.OData;
+using System.Web.OData.Query;
 
-namespace Web.OdataModel
+namespace teacher.web.OdataModel
 {
     public class T_SysMenusController : OdataBaseController
     {
-        [Queryable(AllowedQueryOptions = AllowedQueryOptions.All)]
+        [EnableQuery]
         public IQueryable<T_SysMenus> Get()
         {
             return base._db.T_SysMenus;
