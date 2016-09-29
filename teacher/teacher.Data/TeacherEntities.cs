@@ -29,6 +29,8 @@ namespace teacher.Data
         public DbSet<T_LotteryGroup> T_LotteryGroup { get; set; }
         public DbSet<T_LotteryResult> T_LotteryResult { get; set; }
         public DbSet<T_LotteryUsers> T_LotteryUsers { get; set; }
+
+        public DbSet<T_Students> T_Students { get; set; }
         
     }
 }
