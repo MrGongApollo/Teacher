@@ -10,12 +10,13 @@ using System.Web.Http;
 using System.Web.Http.ModelBinding;
 using System.Web.Http.OData;
 using System.Web.Http.OData.Routing;
+using System.Web.Http.OData.Query;
 
 namespace Web.OdataModel
 {
     public class T_LotteryResultController : OdataBaseController
     {
-        [Queryable]
+        [Queryable(AllowedQueryOptions = AllowedQueryOptions.All)]
         public IQueryable<T_LotteryResult> Get()
         {
             return base._db.T_LotteryResult;

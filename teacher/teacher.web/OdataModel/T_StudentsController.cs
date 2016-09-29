@@ -10,12 +10,13 @@ using System.Web.Http;
 using System.Web.Http.ModelBinding;
 using System.Web.Http.OData;
 using System.Web.Http.OData.Routing;
+using System.Web.Http.OData.Query;
 
 namespace Web.OdataModel
 {
     public class T_StudentsController : OdataBaseController
     {
-        [Queryable]
+        [Queryable(AllowedQueryOptions = AllowedQueryOptions.All)]
         public IQueryable<T_Students> Get()
         {
             return base._db.T_Students;
