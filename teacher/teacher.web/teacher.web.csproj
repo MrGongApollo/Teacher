@@ -176,8 +176,10 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\CommonController.cs" />
+    <Compile Include="Controllers\ExamController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\StudentsController.cs" />
     <Compile Include="Controllers\XTController.cs" />
     <Compile Include="Filter\IsAjaxChecked.cs" />
     <Compile Include="Filter\LoginCheckedAttribute.cs" />
@@ -592,6 +594,10 @@
     <Content Include="Views\Common\Share_Search.cshtml" />
     <Content Include="Views\Common\User_Info.cshtml" />
     <Content Include="Views\Common\User_Setting.cshtml" />
+    <Content Include="Views\Students\StudentsInfo.cshtml" />
+    <Content Include="Views\Students\StudentsAbsent.cshtml" />
+    <Content Include="Views\Students\StudentsScore.cshtml" />
+    <Content Include="Views\Exam\ExamList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\teacher.Data\teacher.Data.csproj">
