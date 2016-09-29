@@ -11,7 +11,7 @@ namespace teacher.web
     {
         public static void Register(HttpConfiguration config)
         {
-            config.MapHttpAttributeRoutes();
+            //config.MapHttpAttributeRoutes();
 
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
@@ -19,9 +19,8 @@ namespace teacher.web
                 defaults: new { id = RouteParameter.Optional }
             );
 
-            ODataConventionModelBuilder builder = new ODataConventionModelBuilder();
-            builder.EntitySet<T_SysMenus>("T_SysMenusController");
-            config.Routes.MapODataRoute("odata", "odata", builder.GetEdmModel());
+            config.Routes.MapODataRoute("odata", "odata", ODataConfig.GetEdmModel());
+            config.EnableQuerySupport();
         }
     }
 }
