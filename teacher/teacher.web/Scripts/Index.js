@@ -74,6 +74,9 @@
                 });
                 //$bar.find(">li").eq(0).find(">a").trigger('click');
                 break;
+            case "error":
+                swal("错误", xhr.Ret.Value, "error");
+                break;
         }
     });
 
@@ -104,7 +107,7 @@
 function UpdatePage(data, status, xhr) {
     UpdateProgressBar();
     UpdateBreadcrumb();
-    UpdateMessage();
+   // UpdateMessage();
 }
 
 
