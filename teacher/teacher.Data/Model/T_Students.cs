@@ -42,5 +42,15 @@ namespace teacher.Data.Models
         /// </summary>
         [MaxLength(100)]
         public string StudentClass { get; set; }
+        /// <summary>
+        /// 在读情况
+        /// </summary>
+        [MaxLength(2)]
+        public string StudyStatus { get; set; }
+        /// <summary>
+        /// 入学年份
+        /// </summary>
+        [MaxLength(10)]
+        public string EnrollmentYear { get; set; }
     }
 }
