@@ -43,6 +43,19 @@ namespace teacher.web
                         ));
             #endregion
 
+            #region bootstrap-datetimepicker
+            bundles.Add(new ScriptBundle("~/bundles/bootstrap-datetimepicker/js").Include(                        
+                        "~/Content/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js",
+                        "~/Content/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"
+                        ));
+
+
+            bundles.Add(new StyleBundle("~/bundles/bootstrap-datetimepicker/css").Include(
+                        "~/Content/bootstrap-datetimepicker/css/bootstrap-datetimepicker.css"
+
+                        ));
+            #endregion
+
             #region bootstrap-Validator
             bundles.Add(new ScriptBundle("~/bundles/bootstrap-Validator/js").Include(
             "~/Content/bootstrap-Validator/js/bootstrapValidator.min.js"

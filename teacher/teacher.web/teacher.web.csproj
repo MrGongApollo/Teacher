@@ -15,7 +15,7 @@
     <AssemblyName>teacher.web</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
-    <UseIISExpress>true</UseIISExpress>
+    <UseIISExpress>false</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
@@ -87,6 +87,9 @@
       <HintPath>..\packages\System.Data.SQLite.Linq.1.0.103\lib\net45\System.Data.SQLite.Linq.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Linq.Dynamic">
+      <HintPath>..\packages\System.Linq.Dynamic.1.0.6\lib\net40\System.Linq.Dynamic.dll</HintPath>
+    </Reference>
     <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
@@ -179,6 +182,7 @@
     <Compile Include="Controllers\ExamController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\LotteryController.cs" />
     <Compile Include="Controllers\StudentsController.cs" />
     <Compile Include="Controllers\XTController.cs" />
     <Compile Include="Filter\IsAjaxChecked.cs" />
@@ -598,6 +602,9 @@
     <Content Include="Views\Students\StudentsAbsent.cshtml" />
     <Content Include="Views\Students\StudentsScore.cshtml" />
     <Content Include="Views\Exam\ExamList.cshtml" />
+    <Content Include="Views\Lottery\LotteryGroup.cshtml" />
+    <Content Include="Views\Lottery\Lottery.cshtml" />
+    <Content Include="Views\Lottery\LotteryResult.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\teacher.Data\teacher.Data.csproj">
@@ -629,7 +636,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>65184</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:65184/</IISUrl>
+          <IISUrl>http://localhost/teacher</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

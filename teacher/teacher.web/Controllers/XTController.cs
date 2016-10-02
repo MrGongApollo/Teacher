@@ -10,6 +10,7 @@ using teacher.web.Filter;
 using teacher.Data;
 using teacher.Data.Models;
 using teacher.web.Models;
+using System.Linq.Dynamic;
 
 namespace teacher.web.Controllers
 {
@@ -53,6 +54,44 @@ namespace teacher.web.Controllers
         //    }
         //}
         //#endregion
+
+        #region 获取菜单信息
+        [HttpGet]
+        public ActionResult GetMenus(int MenuLevel, string MenuName, int offSet = 0, int pageSize = 10, string sortType = "asc", string orderBy = "MenuLevel")
+        {
+            try
+            {
+                using (TeacherEntities context = new TeacherEntities())
+                {
+                    var list = (System.Linq.IQueryable<T_SysMenus>)context.T_SysMenus;
+                    if (!string.IsNullOrEmpty(MenuName))
+                    {
+                        list = list.Where(m => m.MenuName.Contains(MenuName));
+                    }
+                    switch (MenuLevel)
+                    {
+                        case -1:
+                            break;
+                        default:
+                            list = list.Where(m => m.MenuLevel ==MenuLevel);
+                            break;
+                    }
+                    int cnt = list.Count();
+                    string orderExpression = string.Format("{0} {1}", orderBy, sortType);
+                    var _list = list.OrderBy(orderExpression).Skip(offSet).Take(pageSize).ToList();                   
+                    return Json(new
+                    {
+                        total = cnt,
+                        rows = _list
+                    }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        #endregion
 
         //#region 保存菜单
         ///// <summary>

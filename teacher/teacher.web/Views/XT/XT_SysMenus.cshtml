@@ -21,7 +21,7 @@
 
         var $table = $('#table');
         $table.bootstrapTable({
-            url: document.weburl + "odata/T_SysMenus",
+            url: document.weburl +"XT/GetMenus",// "odata/T_SysMenus",
             toolbar: '#toolbar',    //工具按钮用哪个容器
             showRefresh: false, //是否显示刷新按钮
             dataType: "json",
@@ -48,27 +48,36 @@
 
             },
             queryParams: function (params) {
-                var queryParams = {};
-                queryParams["$top"] = params.limit;
-                queryParams["$skip"] = params.offset;
-                //queryParams["$inlinecount"] = "allpages";
-                if (GetFilters())
-                {
-                    queryParams["$filter"] = GetFilters();
-                }
-                if (params.sort)
-                    queryParams["$orderby"] = params.sort + " " + params.order;
+                var queryParams = {
+                    offSet:params.offset,
+                    pageSize: params.limit,
+                    orderBy: params.sort || "MenuLevel",
+                    sortType: params.order || "asc",
+                    MenuLevel: $("#query_menu_level").val(),
+                    MenuName: $("#query_menu_name").val()
+                };
+                //queryParams["$top"] = params.limit;
+                //queryParams["$skip"] = params.offset;
+                ////queryParams["$inlinecount"] = "allpages";
+                //if (GetFilters())
+                //{
+                //    queryParams["$filter"] = GetFilters();
+                //}
+                //if (params.sort)
+                //    queryParams["$orderby"] = params.sort + " " + params.order;
                 return queryParams;
+
+
             },
             sidePagination: "server", //服务端处理分页
-            responseHandler: function (res) {
-                debugger
-                var ret = {
-                    total:10, //res["@@odata.count"],
-                    rows: res.value
-                };
-                return ret;
-            },
+            //responseHandler: function (res) {
+                
+            //    var ret = {
+            //        total:10, //res["@@odata.count"],
+            //        rows: res.value
+            //    };
+            //    return ret;
+            //},
             columns: [
                 { checkbox: true, align: 'center', valign: 'middle' },
                 {
@@ -323,7 +332,7 @@
                                     <i class="fa fa-signal"></i> 菜单等级
                                 </span>
                                 <select class="form-control" id="query_menu_level">
-                                    <option value="all">全部</option>
+                                    <option value="-1">全部</option>
                                     <option value="1">一级菜单</option>
                                     <option value="2">二级菜单</option>
                                 </select>
