@@ -7,9 +7,11 @@ using teacher.Data;
 using teacher.Data.Models;
 using System.Linq.Dynamic;
 using teacher.web.Models;
+using teacher.web.Filter;
 
 namespace teacher.web.Controllers
 {
+    [LoginChecked]
     public class StudentsController : BaseController
     {
         #region 视图

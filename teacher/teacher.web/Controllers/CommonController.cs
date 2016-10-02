@@ -10,12 +10,6 @@ namespace teacher.web.Controllers
     [LoginChecked]
     public class CommonController : BaseController
     {
-        //
-        // GET: /Common/
-        public ActionResult Share_Fonts()
-        {
-            return View();
-        }
 
         public ActionResult Share_Search()
         {
@@ -28,11 +22,6 @@ namespace teacher.web.Controllers
         }
 
         public ActionResult User_Setting()
-        {
-            return View();
-        }
-
-        public ActionResult User_Info()
         {
             return View();
         }

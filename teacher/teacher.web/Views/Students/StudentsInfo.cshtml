@@ -7,6 +7,7 @@
 @Styles.Render("~/bundles/bootstrap-datetimepicker/css")
 @Scripts.Render("~/bundles/bootstrap-datetimepicker/js")
 
+
 <style type="text/css">
     .modal-body > .row {margin-top: 1em;margin-bottom: 1em;}
     .text_padding{padding:5px;color:white;border-radius:5px;}
@@ -24,7 +25,7 @@
                         <div class="col-sm-3">
                             <div class="input-group">
                                 <span class="input-group-addon">
-                                    <i class="fa fa-th"></i> 学号
+                                    <i class="fa fa-credit-card"></i> 学号
                                 </span>
                                 <input type="text" class="form-control" id="query_stu_no" placeholder="请输入学号" autocomplete="off" />
                             </div>
@@ -32,7 +33,7 @@
                         <div class="col-sm-3">
                             <div class="input-group">
                                 <span class="input-group-addon">
-                                    <i class="fa fa-signal"></i> 姓名
+                                    <i class="fa fa-user"></i> 姓名
                                 </span>
                                 <input type="text" class="form-control" id="query_stu_nm" placeholder="请输入姓名" autocomplete="off" />
                             </div>
@@ -40,7 +41,7 @@
                         <div class="col-sm-4">
                             <div class="input-group">
                                 <span class="input-group-addon">
-                                    <i class="fa fa-signal"></i> 在读情况
+                                    <i class="fa fa-building-o"></i> 在读情况
                                 </span>
                                 <div class="input-group-btn">
                                     <button type="button" class="btn btn-default" name="stu_StudyStatus" data-studystatus="-1">全部</button>
@@ -180,86 +181,58 @@
 
 
         var $table = $('#table');
-        $table.bootstrapTable({
-            url: document.weburl + "Students/GetStudents",// "odata/T_SysMenus",
-            toolbar: '#toolbar',    //工具按钮用哪个容器
-            showRefresh: false, //是否显示刷新按钮
-            dataType: "json",
-            method: 'get',
-            height: $(window).height() - $("#header").height() - 200, //table 高度
-            striped: true, //是否显示行间隔色
-            singleSelect: true, //单选
-            sortable: true, //是否启用排序
-            showColumns: true, //字段筛选
-            sortOrder: 'asc',
-            dataLocale: "zh-CN", //表格汉化
-            search: false, //显示搜索框
-            pageSize: 10, //每页的记录行数（*）
-            pageList: [10, 15, 20, 25], //分页选择
-            pageNumber: 1, //初始化加载第一页，默认第一页
-            pagination: true, //分页
-            //minimumCountColumns: 2, //最少允许的列数
-            clickToSelect: true, //是否启用点击选中行
-            queryParamsType: "limit",
-            onLoadSuccess: function (xhr) {
-            },
-            onLoadError: function (status) {
-
-            },
-            queryParams: function (params) {
-                var queryParams = {
-                    offSet:params.offset,
-                    pageSize: params.limit,
-                    orderBy: params.sort || "StudentCode",
-                    sortType: params.order || "asc",
-                    Sno: $("#query_stu_no").val(),
-                    Snm: $("#query_stu_nm").val(),
-                    Status: $("[name='stu_StudyStatus'].btn-primary").attr("data-studystatus")
-                };
-                return queryParams;
+        $.web.bootstrapTable({
+            selector: '#table',
+            option: {
+                url: document.weburl + "Students/GetStudents",// "odata/T_SysMenus",
+                toolbar: '#toolbar',    //工具按钮用哪个容器
+                exportOptions: { fileName: $.web.today() + "学生信息" },
+                queryParams: function (params) {
+                    var queryParams = {
+                        offSet: params.offset,
+                        pageSize: params.limit,
+                        orderBy: params.sort || "StudentCode",
+                        sortType: params.order || "asc",
+                        Sno: $("#query_stu_no").val(),
+                        Snm: $("#query_stu_nm").val(),
+                        Status: $("[name='stu_StudyStatus'].btn-primary").attr("data-studystatus")
+                    };
+                    return queryParams;
 
 
-            },
-            sidePagination: "server", //服务端处理分页
-            //responseHandler: function (res) {
-
-            //    var ret = {
-            //        total:10, //res["@@odata.count"],
-            //        rows: res.value
-            //    };
-            //    return ret;
-            //},
-            columns: [
-                { checkbox: true, align: 'center', valign: 'middle' },
-                {
-                    title: '行号', width: 20, align: 'center', valign: 'middle',
-                    formatter: function (value, row, index) {
-                        return index + 1;
-                    }
                 },
-                { title: '学号', field: 'StudentCode', align: 'center', valign: 'middle', sortable: true },
-                { title: '姓名', field: 'StudentName', align: 'center', valign: 'middle', sortable: true },
-                {
-                    title: '性别', field: 'Sex', align: 'center', valign: 'middle', sortable: true,
-                    formatter: function (value) {
-                        return value ? "<span class='bg-green text_padding'>男</span>" : "<span class='bg-lightred text_padding'>女</span>";
+                columns: [
+                    { checkbox: true, align: 'center', valign: 'middle' },
+                    {
+                        title: '行号', width: 20, align: 'center', valign: 'middle',
+                        formatter: function (value, row, index) {
+                            return index + 1;
+                        }
+                    },
+                    { title: '学号', field: 'StudentCode', align: 'center', valign: 'middle', sortable: true },
+                    { title: '姓名', field: 'StudentName', align: 'center', valign: 'middle', sortable: true },
+                    {
+                        title: '性别', field: 'Sex', align: 'center', valign: 'middle', sortable: true,
+                        formatter: function (value) {
+                            return value ? "<span class='bg-green text_padding'>男</span>" : "<span class='bg-lightred text_padding'>女</span>";
+                        }
+                    },
+                    {
+                        title: '年龄', field: 'BirthDay', align: 'center', valign: 'middle',
+                        formatter: function (value) {
+                            return value ? new Date().getFullYear() - $.web.dateFormat(value, "yyyy") : "未知";
+                        }
+                    },
+                    { title: '班级', field: 'StudentClass', align: 'center', valign: 'middle', sortable: true },
+                    { title: '入学年份', field: 'EnrollmentYear', align: 'center', valign: 'middle', sortable: true },
+                    {
+                        title: '在读情况', field: 'StudyStatus', align: 'center', valign: 'middle', sortable: true,
+                        formatter: function (value) {
+                            return value ? "<span class='bg-green text_padding'>在读</span>" : "<span class='bg-lightred text_padding'>不在读</span>";
+                        }
                     }
-                },
-                {
-                    title: '年龄', field: 'BirthDay', align: 'center', valign: 'middle',
-                    formatter: function (value) {
-                        return value ? new Date().getFullYear() - $.web.dateFormat(value, "yyyy") : "未知";
-                    }
-                },
-                { title: '班级', field: 'StudentClass', align: 'center', valign: 'middle', sortable: true },
-                { title: '入学年份', field: 'EnrollmentYear', align: 'center', valign: 'middle', sortable: true},
-                {
-                    title: '在读情况', field: 'StudyStatus', align: 'center', valign: 'middle', sortable: true,
-                    formatter: function (value) {
-                        return value ? "<span class='bg-green text_padding'>在读</span>" : "<span class='bg-lightred text_padding'>不在读</span>";
-                    }
-                }
-            ]
+                ]
+            }
         });
 
         //查询

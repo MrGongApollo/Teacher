@@ -441,6 +441,59 @@
             {
                 console.error(e.message);
             }
+        },
+        bootstrapTable: function (obj)
+        {
+            var that = this;
+            if (!obj.selector) {
+                console.warn("未配置初始化table!");
+                return;
+            }
+            var defaults={
+                toolbar: '#toolbar',    //工具按钮用哪个容器
+                showRefresh: false, //是否显示刷新按钮
+                dataType: "json",
+                method: 'get',
+                height: $(window).height() - $("#header").height() - 200, //table 高度
+                striped: true, //是否显示行间隔色
+                singleSelect: true, //单选
+                sortable: true, //是否启用排序
+                showColumns: true, //字段筛选
+
+                showExport: true, //导出
+                exportTypes: ['excel'],//导出excel类型
+                exportOptions: { fileName: that.today() },
+
+                sortOrder: 'asc',
+                dataLocale: "zh-CN", //表格汉化
+                search: false, //显示搜索框
+                pageSize: 10, //每页的记录行数（*）
+                pageList: [10, 15, 20, 25], //分页选择
+                pageNumber: 1, //初始化加载第一页，默认第一页
+                pagination: true, //分页
+
+                //minimumCountColumns: 2, //最少允许的列数
+                clickToSelect: true, //是否启用点击选中行
+                queryParamsType: "limit",
+                onLoadSuccess: function (xhr) {
+                },
+                onLoadError: function (status) {
+
+                },
+                sidePagination: "server", //服务端处理分页
+                //responseHandler: function (res) {
+
+                //    var ret = {
+                //        total:10, //res["@@odata.count"],
+                //        rows: res.value
+                //    };
+                //    return ret;
+                //},
+            };
+
+            $(obj.selector).bootstrapTable(
+                $.extend(defaults, obj.option)
+            );
         }
     };
     $.web = new WebUntils();

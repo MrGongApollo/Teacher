@@ -593,10 +593,8 @@
     <Content Include="Views\Login\Index.cshtml" />
     <Content Include="Views\XT\XT_FontIcons.cshtml" />
     <Content Include="Views\XT\XT_SysMenus.cshtml" />
-    <Content Include="Views\Common\Share_Fonts.cshtml" />
     <Content Include="Views\Common\Share_MsgCenter.cshtml" />
     <Content Include="Views\Common\Share_Search.cshtml" />
-    <Content Include="Views\Common\User_Info.cshtml" />
     <Content Include="Views\Common\User_Setting.cshtml" />
     <Content Include="Views\Students\StudentsInfo.cshtml" />
     <Content Include="Views\Students\StudentsAbsent.cshtml" />

@@ -91,7 +91,6 @@ namespace teacher.web.Controllers
             #region 记录日志
             
             #endregion
-            filterContext.ExceptionHandled = true;
             base.OnException(filterContext);
         }
         #endregion
