@@ -450,11 +450,10 @@
                 return;
             }
             var defaults={
-                toolbar: '#toolbar',    //工具按钮用哪个容器
                 showRefresh: false, //是否显示刷新按钮
                 dataType: "json",
                 method: 'get',
-                height: $(window).height() - $("#header").height() - 200, //table 高度
+                height: 400, //table 高度
                 striped: true, //是否显示行间隔色
                 singleSelect: true, //单选
                 sortable: true, //是否启用排序
@@ -463,7 +462,7 @@
                 showExport: true, //导出
                 exportTypes: ['excel'],//导出excel类型
                 exportOptions: { fileName: that.today() },
-
+                //sortName: '',//排序字段
                 sortOrder: 'asc',
                 dataLocale: "zh-CN", //表格汉化
                 search: false, //显示搜索框

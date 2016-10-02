@@ -25,5 +25,23 @@ namespace teacher.web.Controllers
         {
             return View();
         }
+
+        /// <summary>
+        /// 公共调用学生
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Share_Students()
+        {
+            return PartialView();
+        }
+
+        /// <summary>
+        /// 公共调用考试
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Share_Exams()
+        {
+            return PartialView();
+        }
 	}
 }

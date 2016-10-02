@@ -11,7 +11,6 @@
 <style type="text/css">
     .modal-body > .row {margin-top: 1em;margin-bottom: 1em;}
     .text_padding{padding:5px;color:white;border-radius:5px;}
-    .noempty:before{content:"*";margin-right:2px;color:red;}
 </style>
 
 <div class="container-fluid">
@@ -22,7 +21,7 @@
 
                 <div class="panel-body">
                     <div class="row margin_tb_5">
-                        <div class="col-sm-3">
+                        <div class="col-sm-3 margin_tb_5">
                             <div class="input-group">
                                 <span class="input-group-addon">
                                     <i class="fa fa-credit-card"></i> 学号
@@ -30,7 +29,7 @@
                                 <input type="text" class="form-control" id="query_stu_no" placeholder="请输入学号" autocomplete="off" />
                             </div>
                         </div>
-                        <div class="col-sm-3">
+                        <div class="col-sm-3 margin_tb_5">
                             <div class="input-group">
                                 <span class="input-group-addon">
                                     <i class="fa fa-user"></i> 姓名
@@ -38,7 +37,7 @@
                                 <input type="text" class="form-control" id="query_stu_nm" placeholder="请输入姓名" autocomplete="off" />
                             </div>
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-6 col-lg-4 margin_tb_5">
                             <div class="input-group">
                                 <span class="input-group-addon">
                                     <i class="fa fa-building-o"></i> 在读情况
@@ -50,7 +49,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-2 text-right">
+                        <div class="col-sm-12 col-lg-2 margin_tb_5 text-right">
                             <button type="button" id="btn_query" class="btn btn-primary btn-sm"><i class="fa fa-search"></i> 查询</button>
                             <button type="reset" id="btn_reset" class="btn btn-info btn-sm"><i class="fa fa-refresh"></i> 重置</button>
                         </div>
@@ -71,6 +70,10 @@
         <button id="btn_Delete" type="button" class="btn btn-danger">
             <span class="fa fa-remove" aria-hidden="true"></span> 删除
         </button>
+        <button id="btn_UpdateGraduate" type="button" class="btn btn-primary" data-toggle="tooltip"
+                data-placement="top" title="将当前年份与入学之差不小于3年的学生在读情况更新为不在读！">
+            <span class="fa fa-refresh" aria-hidden="true"></span> 更新毕业生
+        </button>
     </div>
 
     <table id="table"></table>
@@ -89,13 +92,13 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="input-group">
-                                <label for="txt_stu_code" class="input-group-addon noempty">学号</label>
+                                <label for="txt_stu_code" class="input-group-addon form_noempty">学号</label>
                                 <input type="text" name="menu_code" class="form-control" id="txt_stu_code" placeholder="请输入学号(必填)" autocomplete="off">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="input-group">
-                                <label for="txt_stu_name" class="input-group-addon noempty">姓名</label>
+                                <label for="txt_stu_name" class="input-group-addon form_noempty">姓名</label>
                                 <input type="text" name="menu_name" class="form-control" id="txt_stu_name" placeholder="请输入姓名(必填)" autocomplete="off">
                             </div>
                         </div>
@@ -104,7 +107,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="input-group">
-                                <span class="input-group-addon noempty">性别</span>
+                                <span class="input-group-addon form_noempty">性别</span>
                                 <div class="form-control">
                                     <label class="radio-inline"><input type="radio" name="stu_sex" value="1" checked />男</label>
                                     <label class="radio-inline"><input type="radio" name="stu_sex" value="0" />女</label>
@@ -113,7 +116,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="input-group">
-                                <span class="input-group-addon noempty">生日</span>
+                                <span class="input-group-addon form_noempty">生日</span>
                                 <input class="datepicker form-control" type="text" id="txt_stu_BirthDay" />
                                 <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                             </div>
@@ -124,7 +127,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="input-group">
-                                <label for="txt_stu_class" class="input-group-addon noempty">班级</label>
+                                <label for="txt_stu_class" class="input-group-addon form_noempty">班级</label>
                                 <input class="form-control" type="text" id="txt_stu_class" placeholder="请输入班级(必填)" />
                             </div>
                         </div>
@@ -142,7 +145,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="input-group">
-                                <label for="txt_stu_EnrollmentYear" class="input-group-addon noempty">入学年份</label>
+                                <label for="txt_stu_EnrollmentYear" class="input-group-addon form_noempty">入学年份</label>
                                 <input class="form-control" type="text" id="txt_stu_EnrollmentYear" placeholder="请填写入学年份(必填)" />
                             </div>
                         </div>
@@ -163,7 +166,7 @@
     $(function () {
         var cur_operatype;//当前操作类型
     //初始化 日期插件
-        $(".datepicker").datetimepicker({
+        $(".datepicker").attr("readonly",true).datetimepicker({
             language: 'zh-CN',
             format: "yyyy-mm-dd",
             showMeridian: true,
@@ -179,6 +182,7 @@
             }
         });
 
+        $("[data-toggle='tooltip']").tooltip();
 
         var $table = $('#table');
         $.web.bootstrapTable({
@@ -271,6 +275,25 @@
             swal({
                 title: "确认删除所选学生信息?",
                 text: "一旦删除无法恢复!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "是",
+                cancelButtonText: "否",
+                closeOnConfirm: false
+            }, function () {
+                SaveStu({
+                    stu: { StudentCode: rowData.StudentCode },
+                    operatype: "delete"
+                });
+            });
+        });
+
+        //更新毕业生
+        $("#btn_UpdateGraduate").click(function () {
+            swal({
+                title: "确认更新毕业生?",
+                text: "将会更新所有毕业生在读情况为【不在读】！",
                 type: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#DD6B55",
