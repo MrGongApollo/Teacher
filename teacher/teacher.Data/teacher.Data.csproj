@@ -64,6 +64,7 @@
     <Compile Include="Model\T_LotteryGroup.cs" />
     <Compile Include="Model\T_LotteryUsers.cs" />
     <Compile Include="Model\T_LotteryResult.cs" />
+    <Compile Include="Model\T_Score.cs" />
     <Compile Include="Model\T_Students.cs" />
     <Compile Include="Model\T_User.cs" />
     <Compile Include="Model\T_SysMenus.cs" />

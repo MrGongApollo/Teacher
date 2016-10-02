@@ -14,13 +14,23 @@ namespace teacher.Data.Models
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
-    [Table("T_Students")]
-    public partial class T_Students
+    [Table("T_Score")]
+    public partial class T_Score
     {
+        /// <summary>
+        /// 主键ID
+        /// </summary>
+        [Key]
+        [MaxLength(32)]
+        public string ScoreID { get; set; }
+        /// <summary>
+        /// 考试编号
+        /// </summary>
+        [MaxLength(32)]
+        public string ExamID { get; set; }
         /// <summary>
         /// 学号
         /// </summary>
-        [Key]
         [MaxLength(20)]
         public string StudentCode { get; set; }
         /// <summary>
@@ -29,26 +39,21 @@ namespace teacher.Data.Models
         [MaxLength(50)]
         public string StudentName { get; set; }
         /// <summary>
-        /// 性别
-        /// </summary>
-        public bool Sex { get; set; }
-        /// <summary>
-        /// 生日
-        /// </summary>
-        public Nullable<System.DateTime> BirthDay { get; set; }
-        /// <summary>
         /// 班级
         /// </summary>
         [MaxLength(100)]
         public string StudentClass { get; set; }
         /// <summary>
-        /// 在读情况
+        /// 科目
         /// </summary>
-        public bool StudyStatus { get; set; }
+        public string Course { get; set; }
         /// <summary>
-        /// 入学年份
+        /// 分数
         /// </summary>
-        [MaxLength(10)]
-        public string EnrollmentYear { get; set; }
+        public Nullable<System.Decimal> Score { get; set; }
+        /// <summary>
+        /// 创建时间
+        /// </summary>
+        public Nullable<System.DateTime> CreateTime { get; set; }
     }
 }
