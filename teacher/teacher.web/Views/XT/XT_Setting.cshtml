@@ -1,0 +1,238 @@
+﻿@Styles.Render("~/bundles/sweetalert/css")
+@Scripts.Render("~/bundles/sweetalert/js")
+
+<style type="text/css">
+
+</style>
+
+<div class="container-fluid">
+    <div class="panel panel-default">
+        <div class="panel-heading panel-headicon"><i class="fa fa-cog"></i> <h5>系统设置</h5></div>
+        <div class="panel-body">
+            <div class="row margin_tb_5">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="fa fa-th"></i> 常用科目
+                        </span>
+                        <input type="text" class="form-control" id="txt_c_name" placeholder="请输入科目名称" autocomplete="off" />
+                        <div class="input-group-btn">
+                            <button type="button" class="btn btn-primary" id="btn_cname_add"><i class="fa fa-plus"></i> 添加</button>
+                        </div>
+                    </div>
+                    <p class="color-lightred"><b class="color-red">注意：</b>设置科目名称会影响到试卷选所选科目等..</p>
+                    <ul class="list-group" id="course-list"></ul>
+                </div>
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="fa fa-th-large"></i> 常用班级
+                        </span>
+                        <input type="text" class="form-control" id="txt_class_name" placeholder="请输入班级" autocomplete="off" />
+                        <div class="input-group-btn">
+                            <button type="button" class="btn btn-primary" id="btn_class_add"><i class="fa fa-plus"></i> 添加</button>
+                        </div>
+                    </div>
+                    <p class="color-lightred"><b class="color-red">注意：</b>设置班级名称会影响到其他模块..</p>
+                    <ul class="list-group" id="class-list"></ul>
+                </div>
+            </div><!-- /.row -->
+        </div>
+
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    window.curlocation = ['系统管理', '系统设置'];
+    $(function () {
+        $.web.getAsync(document.weburl + "XT/GetCourses").done(function (xhr) {
+            switch (xhr.Ret.Key) {
+                case "success":
+                    var $courses = $("#course-list");
+                    $courses.empty();
+                    $.each(xhr.Data, function (_i, _t) {
+                        $courses.append(
+                            $("<li>", { "class": "list-group-item" }).text(_t.CourseName).append(
+                            $("<a>", { "href": "javascript:;", "class": "course-remove pull-right color-lightred" }).append($("<i>", { "class": "fa fa-remove" })).click(function () {
+                                var $this = $(this),
+                                    Ckey = $(this).closest("li.list-group-item").data("CourseID");
+                                swal({
+                                    title: "确认删除所选科目?",
+                                    text: "一旦删除无法恢复!",
+                                    type: "warning",
+                                    showCancelButton: true,
+                                    confirmButtonColor: "#DD6B55",
+                                    confirmButtonText: "是",
+                                    cancelButtonText: "否",
+                                    closeOnConfirm: false
+                                }, function () {
+                                    SaveCourse({
+                                        course: { CourseID: Ckey },
+                                        operatype: "delete"
+                                    }, $this.closest("li.list-group-item"));
+                                });
+                            })
+                            ).data(_t)
+                            );
+                    });
+
+                    break;
+                case "error":
+                    $.web.toast(xhr.Ret.Value);
+                    break;
+            }
+        });
+
+        $.web.getAsync(document.weburl + "XT/GetClass").done(function (xhr) {
+            switch (xhr.Ret.Key) {
+                case "success":
+                    var $courses = $("#class-list");
+                    $courses.empty();
+                    $.each(xhr.Data, function (_i, _t) {
+                        $courses.append(
+                            $("<li>", { "class": "list-group-item" }).text(_t.ClassName).append(
+                            $("<a>", { "href": "javascript:;", "class": "course-remove pull-right color-lightred" }).append($("<i>", { "class": "fa fa-remove" })).click(function () {
+                                var $this = $(this),
+                                    Ckey = $(this).closest("li.list-group-item").data("ClassID");
+                                swal({
+                                    title: "确认删除所选科目?",
+                                    text: "一旦删除无法恢复!",
+                                    type: "warning",
+                                    showCancelButton: true,
+                                    confirmButtonColor: "#DD6B55",
+                                    confirmButtonText: "是",
+                                    cancelButtonText: "否",
+                                    closeOnConfirm: false
+                                }, function () {
+                                    SaveClass({
+                                        Sclass: { ClassID: Ckey },
+                                        operatype: "delete"
+                                    }, $this.closest("li.list-group-item"));
+                                });
+                            })
+                            ).data(_t)
+                            );
+                    });
+
+                    break;
+                case "error":
+                    $.web.toast(xhr.Ret.Value);
+                    break;
+            }
+        });
+
+        $("#btn_cname_add").click(function () {
+            if (!$("#txt_c_name").val()) {
+                $.web.toast("科目名称不可为空！");
+                return;
+            }
+
+            SaveCourse(
+                {
+                    course: { CourseName: $("#txt_c_name").val() },
+                    operatype: "add"
+                });
+        });
+
+        $("#btn_class_add").click(function () {
+            if (!$("#txt_class_name").val()) {
+                $.web.toast("班级不可为空！");
+                return;
+            }
+            SaveClass(
+                {
+                    Sclass: { ClassName: $("#txt_class_name").val() },
+                    operatype: "add"
+                });
+        });
+    });
+
+    function SaveCourse(data, $del) {
+        $.web.post(document.weburl + "XT/CourseSave", data).done(function (xhr) {
+            switch (xhr.Ret.Key) {
+                case "success":
+                    swal("操作成功", "你的操作已经成功执行", "success");
+                    if (data.operatype == "add")
+                    {
+                        $("#course-list").append(
+                                $("<li>", { "class": "list-group-item" }).text(xhr.Data.CourseName).append(
+                                $("<a>", { "href": "javascript:;", "class": "course-remove pull-right color-lightred" }).append($("<i>", { "class": "fa fa-remove" })).click(function () {
+                                    var $this = $(this),
+                                        Ckey = $this.closest("li.list-group-item").data("CourseID");
+                                    
+                                    swal({
+                                        title: "确认删除所选科目?",
+                                        text: "一旦删除无法恢复!",
+                                        type: "warning",
+                                        showCancelButton: true,
+                                        confirmButtonColor: "#DD6B55",
+                                        confirmButtonText: "是",
+                                        cancelButtonText: "否",
+                                        closeOnConfirm: false
+                                    }, function () {
+                                        SaveCourse({
+                                            course: { CourseID: Ckey },
+                                            operatype: "delete"
+                                        }, $this.closest("li.list-group-item"));
+                                    });
+                                })
+                                ).data(xhr.Data)
+                            );
+                    }
+                    else
+                    {
+                        $del.remove();
+                    }
+                    break;
+                default:
+                    swal("操作失败", xhr.Ret.Value, "error");
+                    break;
+
+            }
+        });
+    }
+
+    function SaveClass(data, $del) {
+        $.web.post(document.weburl + "XT/ClassSave", data).done(function (xhr) {
+            switch (xhr.Ret.Key) {
+                case "success":
+                    swal("操作成功", "你的操作已经成功执行", "success");
+                    if (data.operatype == "add") {
+                        $("#class-list").append(
+                                $("<li>", { "class": "list-group-item" }).text(xhr.Data.ClassName).append(
+                                $("<a>", { "href": "javascript:;", "class": "course-remove pull-right color-lightred" }).append($("<i>", { "class": "fa fa-remove" })).click(function () {
+                                    var $this = $(this),
+                                        Ckey = $this.closest("li.list-group-item").data("ClassID");
+
+                                    swal({
+                                        title: "确认删除所选班级?",
+                                        text: "一旦删除无法恢复!",
+                                        type: "warning",
+                                        showCancelButton: true,
+                                        confirmButtonColor: "#DD6B55",
+                                        confirmButtonText: "是",
+                                        cancelButtonText: "否",
+                                        closeOnConfirm: false
+                                    }, function () {
+                                        SaveClass({
+                                            Sclass: { ClassID: Ckey },
+                                            operatype: "delete"
+                                        }, $this.closest("li.list-group-item"));
+                                    });
+                                })
+                                ).data(xhr.Data)
+                            );
+                    }
+                    else {
+                        $del.remove();
+                    }
+                    break;
+                default:
+                    swal("操作失败", xhr.Ret.Value, "error");
+                    break;
+
+            }
+        });
+    }
+</script>

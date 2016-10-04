@@ -1,10 +1,324 @@
-﻿
-@{
-    ViewBag.Title = "StudentsAbsent";
-}
+﻿@Styles.Render("~/bundles/bootstrap-table/css")
+@Scripts.Render("~/bundles/bootstrap-table/js")
+@Styles.Render("~/bundles/bootstrap-daterangepicker/css")
+@Scripts.Render("~/bundles/bootstrap-daterangepicker/js")
+
+
+<style type="text/css">
+    .modal-body > .row { margin-top: 1em;margin-bottom: 1em;}
+</style>
+
+<div class="container-fluid">
+    <form method="post">
+        <div class="panel panel-default nomargin">
+            <div class="panel-heading panel-headicon"><i class="fa fa-search"></i> <h5>查询条件</h5></div>
+
+            <div class="panel-body">
+                <div class="row margin_tb_5">
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="fa fa-credit-card"></i> 学号
+                            </span>
+                            <input type="text" class="form-control" id="query_stu_no" placeholder="请输入学号" autocomplete="off" />
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="fa fa-user"></i> 姓名
+                            </span>
+                            <input type="text" class="form-control" id="query_stu_nm" placeholder="请输入姓名" autocomplete="off" />
+                        </div>
+                    </div>
+                    <div class="col-sm-4 text-right">
+                        <button type="button" id="btn_query" class="btn btn-primary btn-sm"><i class="fa fa-search"></i> 查询</button>
+                        <button type="reset" id="btn_reset" class="btn btn-info btn-sm"><i class="fa fa-refresh"></i> 重置</button>
+                    </div>
+                </div><!-- /.row -->
+            </div>
+
+        </div>
+    </form>
+
+    <div id="toolbar" class="btn-group">
+        <button id="btn_Add" type="button" class="btn btn-success">
+            <span class="fa fa-plus" aria-hidden="true"></span> 新增
+        </button>
+        <button id="btn_View" type="button" class="btn btn-primary">
+            <span class="fa fa-eye" aria-hidden="true"></span> 查看
+        </button>
+        <button id="btn_Delete" type="button" class="btn btn-danger">
+            <span class="fa fa-remove" aria-hidden="true"></span> 删除
+        </button>
+    </div>
+
+    <table id="table"></table>
+</div>
+
+<form id="AbsentResult_form">
+    <div class="modal fade" id="AbsentResult_Modal" tabindex="-1" role="dialog" aria-labelledby="AbsentResult_ModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="AbsentResult_ModalLabel">请假记录维护</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12 margin_tb_5">
+                            <div class="input-group">
+                                <label for="txt_stu_info" class="input-group-addon form_noempty">学生信息</label>
+                                <input type="text" class="form-control" id="txt_stu_info" placeholder="请选择一个学生(必选)" autocomplete="off" readonly>
+                                <div class="input-group-btn">
+                                    <button type="button" class="btn btn-success btn-select-stu">
+                                        <i class="fa fa-search"></i> 选择
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 margin_tb_5">
+                            <div class="input-group">
+                                <label for="txt_absent_time" class="input-group-addon form_noempty">请假时间</label>
+                                <input type="text" class="form-control bootstrap-daterangepicker" id="txt_absent_time" placeholder="选择请假时间范围(必选)" autocomplete="off">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 margin_tb_5">
+                            <div class="input-group">
+                                <label class="input-group-addon">请假原因</label>
+                                <textarea class="form-control" id="txt_absent_reason" placeholder="请填写请假原因(不能超过500字)"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>关闭</button>
+                    <button type="button" id="btn_submit" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@{Html.RenderAction("Share_Students", "Common", new { fnName="stuCallback"});}
+
 <script type="text/javascript">
     window.curlocation = ['学生管理', '请假记录'];
+
+    $(function () {
+        var cur_operatype;//当前操作类型
+        var $absent_modal = $("#AbsentResult_Modal");
+        
+        $absent_modal.find(".btn-select-stu").click(function () {
+            $("#ShareStudents_Modal").modal("show");
+        });
+
+        //初始化 日期插件
+        var $daterange=$absent_modal.find(".bootstrap-daterangepicker");
+
+        $daterange.attr({
+            "data-date-start": "",
+            "data-date-end": "",
+            "readonly":true
+        }).daterangepicker(null, function (start, end, label) {
+            $daterange.attr({
+                "data-date-start": $.web.dateFormat(new Date(start), "yyyy-MM-dd"),
+                "data-date-end": $.web.dateFormat(new Date(end), "yyyy-MM-dd")
+            });
+
+        }).on('apply.daterangepicker', function (ev, picker) {
+            $daterange.attr({
+                "data-date-start": $.web.dateFormat(new Date(picker.startDate), "yyyy-MM-dd"),
+                "data-date-end": $.web.dateFormat(new Date(picker.endDate), "yyyy-MM-dd")
+            });
+        });
+
+        var $table = $('#table');
+        $.web.bootstrapTable({
+            selector: '#table',
+            option: {
+                url: document.weburl + "Students/GetStudentsAbsentResult",
+                method: 'post',
+                toolbar: '#toolbar',    //工具按钮用哪个容器
+                exportOptions: {
+                    fileName: $.web.today() + "请假记录",
+                    ignoreColumn: [0],//忽略第1列
+                    onCellData: function ($cell, rowIndex, colIndex, result)
+                    {
+                        return colIndex == 5 && rowIndex>0?$cell.find("span").attr("title"):result;
+                    }
+                },//导出excle 的配置
+                sortOrder: 'desc',
+                queryParams: function (params) {
+                    var queryParams = {
+                        offSet: params.offset,
+                        pageSize: params.limit,
+                        orderBy: params.sort || "CreateTime",
+                        sortType: params.order,
+                        filter: {
+                            StudentCode: $("#query_stu_no").val(),
+                            StudentName: $("#query_stu_nm").val()
+                        }
+                    };
+                    return queryParams;
+                },
+                columns: [
+                    { checkbox: true, align: 'center', valign: 'middle' },
+                    {
+                        title: '行号', width: 20, align: 'center', valign: 'middle',
+                        formatter: function (value, row, index) {
+                            return index + 1;
+                        }
+                    },
+                    { title: '学号', field: 'StudentCode', align: 'center', valign: 'middle', sortable: true },
+                    { title: '姓名', field: 'StudentName', align: 'center', valign: 'middle', sortable: true },
+                    {
+                        title: '请假时间', align: 'center', valign: 'middle', sortable: true,
+                        formatter: function (value, row, index)
+                        {
+                            return ($.web.dateFormat(row.AbsentTimeBegin,"yyyy-MM-dd")||"无")+"至" +($.web.dateFormat(row.AbsentTimeEnd,"yyyy-MM-dd")||"无");
+                        }
+                    },
+                    {
+                        title: '请假原因', field: 'Reason', align: 'center', valign: 'middle', sortable: true,
+                        formatter: function (value, row, index)
+                        {
+                            return "<span title='"+value+"'>"+$.web.Substr(value,20,"...")+"</span>";
+                        }
+                    },
+                    {
+                        title: '创建时间', field: 'CreateTime', align: 'center', valign: 'middle', sortable: true,
+                        formatter: function (value, row, index) {
+                            return $.web.dateFormat(value,"yyyy-MM-dd");
+                        }
+                    }
+                ]
+            }
+        });
+
+
+
+        var $absent_modal = $("#AbsentResult_Modal");
+
+        //查询
+        $("#btn_query").click(function () {
+            $table.bootstrapTable('refresh');
+        });
+        //新增
+        $("#btn_Add").click(function () {
+            $("#AbsentResult_form")[0].reset();
+            $("#AbsentResult_Modal :input").attr("disabled", false);
+            $daterange.attr({
+                "data-date-start": "",
+                "data-date-end": ""
+            });
+            cur_operatype = "add";
+            $absent_modal.modal("show");
+        });
+
+        //查看
+        $("#btn_View").click(function () {
+            var rowData = $table.bootstrapTable('getSelections');
+            if (rowData.length == 0) { $.web.toast("请选择一行数据！"); return; }
+            $absent_modal.modal("show");
+            $("#txt_stu_info").attr({
+                "data-stu-code": rowData[0].StudentCode,
+                "data-stu-name": rowData[0].StudentName
+            }).val(rowData[0].StudentName + "(" + rowData[0].StudentCode + ")");
+
+            $daterange.attr({
+                "data-date-start":$.web.dateFormat(rowData[0].AbsentTimeBegin,"yyyy-MM-dd"),
+                "data-date-end": $.web.dateFormat(rowData[0].AbsentTimeEnd, "yyyy-MM-dd")
+            }).val($.web.dateFormat(rowData[0].AbsentTimeBegin, "yyyy-MM-dd") + " - " + $.web.dateFormat(rowData[0].AbsentTimeEnd, "yyyy-MM-dd"));
+            $("#txt_absent_reason").val(rowData[0].Reason);
+            $("#AbsentResult_Modal :input").attr("disabled", true);
+            $("#btn_submit").prev().attr("disabled", false);
+        });
+
+        //删除
+        $("#btn_Delete").click(function () {
+            var rowData = $table.bootstrapTable('getSelections');
+            if (rowData.length == 0) { $.web.toast("请选择一行数据！"); return; }
+            rowData = rowData[0];
+            swal({
+                title: "确认删除所选请假记录?",
+                text: "一旦删除无法恢复!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "是",
+                cancelButtonText: "否",
+                closeOnConfirm: false
+            }, function () {
+                SaveAbsent({
+                    absent: { AbsentID: rowData.AbsentID },
+                    operatype: "delete"
+                });
+            });
+        });
+
+        //保存
+        $("#btn_submit").click(function () {
+            var _valid = true, _validList = [
+                { selector: "#txt_stu_info", errmsg: "学生信息不可为空" },
+                { selector: "#txt_absent_time", errmsg: "请假时间不可为空" }
+            ], errret = {
+                cnt: 0,
+                msg: []
+            };
+
+            $.each(_validList, function (_i, _t) {
+                if (!$(_t.selector).val()) { errret.cnt++; errret.msg.push(_t.errmsg); }
+            });
+
+            if (errret.cnt > 0) {
+                $.web.toast({ text: errret.msg.join(","), duration: 5000 });
+                return;
+            }
+
+            var _absent = {
+                StudentCode: $("#txt_stu_info").attr("data-stu-code"),
+                StudentName: $("#txt_stu_info").attr("data-stu-name"),
+                AbsentTimeBegin: $("#txt_absent_time").attr("data-date-start"),
+                AbsentTimeEnd: $("#txt_absent_time").attr("data-date-end"),
+                Reason: $("#txt_absent_reason").val()
+            };
+
+            var _obj = {
+                absent: _absent,
+                operatype: cur_operatype
+            };
+
+            SaveAbsent(_obj);
+
+        });
+
+    });
+
+
+    function SaveAbsent(data) {
+        $.web.post(document.weburl + "Students/AbsentResultSave", data).done(function (xhr) {
+            switch (xhr.Key) {
+                case "success":
+                    swal("操作成功", "你的操作已经成功执行", "success");
+                    $("#AbsentResult_Modal").modal("hide");
+                    $('#table').bootstrapTable('refresh');
+                    break;
+                default:
+                    swal("操作失败", xhr.Value, "error");
+                    break;
+
+            }
+        });
+    }
+
+    function stuCallback(data) {
+        $("#txt_stu_info").attr({
+            "data-stu-code": data.StudentCode,
+            "data-stu-name": data.StudentName
+        }).val(data.StudentName + "(" + data.StudentCode + ")");
+    }
 </script>
-
-<h2>StudentsAbsent</h2>
-

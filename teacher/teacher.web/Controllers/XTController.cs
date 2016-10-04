@@ -28,6 +28,11 @@ namespace teacher.web.Controllers
             return View();
         }
 
+        public ActionResult XT_Setting()
+        {
+            return View();
+        }
+
         #endregion
 
         #region 系统菜单
@@ -235,6 +240,174 @@ namespace teacher.web.Controllers
         }
         #endregion
 
+        #endregion
+        #endregion
+
+        #region 科目
+        #region 获取科目名称
+        [HttpGet]
+        public JsonResult GetCourses()
+        {
+            base.fin_r = base.error_r;
+            try
+            {
+                using (TeacherEntities context = new TeacherEntities())
+                {
+                    var list = context.T_Course.OrderBy(c => c.CourseID).ToList();
+                    base.fin_r = base.success_r;
+                    return JsonR(list, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                base.fin_r.Value = ex.Message;
+            }
+            return JsonR(JsonRequestBehavior.AllowGet);
+        }
+        #endregion
+
+        #region 保存科目
+        /// <summary>
+        /// 保存学生信息
+        /// </summary>
+        /// <param name="stu">科目</param>
+        /// <param name="operatype">操作类型</param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult CourseSave(T_Course course, string operatype)
+        {
+            base.fin_r = base.error_r;
+            try
+            {
+                using (TeacherEntities context = new TeacherEntities())
+                {
+                    switch (operatype)
+                    {
+                        #region 新增
+                        case "add":
+                            if (context.T_Course.Any(c => c.CourseName == course.CourseName))
+                            {
+                                base.fin_r.Value = "已经存在\"" + course.CourseName + "\"科目";
+                            }
+                            else
+                            {
+                                context.T_Course.Add(course);
+                                context.SaveChanges();
+                                course.CourseID = context.T_Course.FirstOrDefault(c => c.CourseName == course.CourseName).CourseID;
+                                base.fin_r = base.success_r;
+                                return JsonR(course);
+                            }
+                            break;
+                        #endregion
+                        #region 删除
+                        case "delete":
+                            T_Course Course = context.T_Course.Where(m => m.CourseID == course.CourseID).FirstOrDefault();
+                            if (Course != null)
+                            {
+                                context.T_Course.Remove(Course);
+                                context.SaveChanges();
+                                base.fin_r = base.success_r;
+                            }
+                            else
+                            {
+                                base.fin_r.Value = "未能找到此科目信息，可能已被删除！";
+                            }
+                            break;
+                        #endregion
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                base.fin_r.Value = ex.Message;
+            }
+
+            return JsonR();
+        }
+        #endregion
+        #endregion
+
+        #region 班级
+        #region 获取班级名称
+        [HttpGet]
+        public JsonResult GetClass()
+        {
+            base.fin_r = base.error_r;
+            try
+            {
+                using (TeacherEntities context = new TeacherEntities())
+                {
+                    var list = context.T_Class.OrderBy(c => c.ClassID).ToList();
+                    base.fin_r = base.success_r;
+                    return JsonR(list, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                base.fin_r.Value = ex.Message;
+            }
+            return JsonR(JsonRequestBehavior.AllowGet);
+        }
+        #endregion
+
+        #region 保存班级
+        /// <summary>
+        /// 保存班级
+        /// </summary>
+        /// <param name="Sclass">班级</param>
+        /// <param name="operatype">操作类型</param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult ClassSave(T_Class Sclass, string operatype)
+        {
+            base.fin_r = base.error_r;
+            try
+            {
+                using (TeacherEntities context = new TeacherEntities())
+                {
+                    switch (operatype)
+                    {
+                        #region 新增
+                        case "add":
+                            if (context.T_Class.Any(c => c.ClassName == Sclass.ClassName))
+                            {
+                                base.fin_r.Value = "已经存在\"" + Sclass.ClassName + "\"";
+                            }
+                            else
+                            {
+                                context.T_Class.Add(Sclass);
+                                context.SaveChanges();
+                                Sclass.ClassID = context.T_Class.FirstOrDefault(c => c.ClassName == Sclass.ClassName).ClassID;
+                                base.fin_r = base.success_r;
+                                return JsonR(Sclass);
+                            }
+                            break;
+                        #endregion
+                        #region 删除
+                        case "delete":
+                            T_Class _Class = context.T_Class.Where(m => m.ClassID == Sclass.ClassID).FirstOrDefault();
+                            if (_Class != null)
+                            {
+                                context.T_Class.Remove(_Class);
+                                context.SaveChanges();
+                                base.fin_r = base.success_r;
+                            }
+                            else
+                            {
+                                base.fin_r.Value = "未能找到此科目信息，可能已被删除！";
+                            }
+                            break;
+                        #endregion
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                base.fin_r.Value = ex.Message;
+            }
+
+            return JsonR();
+        }
         #endregion
         #endregion
     }

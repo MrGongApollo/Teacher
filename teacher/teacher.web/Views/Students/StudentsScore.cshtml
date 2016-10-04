@@ -1,69 +1,78 @@
-﻿@{
-    ViewBag.Title = "StudentsInfo";
-}
-@Styles.Render("~/bundles/bootstrap-table/css")
+﻿@Styles.Render("~/bundles/bootstrap-table/css")
 @Scripts.Render("~/bundles/bootstrap-table/js")
-@Styles.Render("~/bundles/bootstrap-datetimepicker/css")
-@Scripts.Render("~/bundles/bootstrap-datetimepicker/js")
-
+@Styles.Render("~/bundles/bootstrap-daterangepicker/css")
+@Scripts.Render("~/bundles/bootstrap-daterangepicker/js")
 
 <style type="text/css">
-    .modal-body > .row {
-        margin-top: 1em;
-        margin-bottom: 1em;
-    }
-
-    .text_padding {
-        padding: 5px;
-        color: white;
-        border-radius: 5px;
-    }
+    .modal-body>.row {margin-top: 1em;margin-bottom: 1em;}
 </style>
 
 <div class="container-fluid">
     <form method="post">
-        <div class="panel-body nopadding">
-            <div class="panel panel-default">
-                <div class="panel-heading panel-headicon"><i class="fa fa-search"></i> <h5>查询条件</h5></div>
+        <div class="panel panel-default nomargin">
+            <div class="panel-heading panel-headicon"><i class="fa fa-search"></i> <h5>查询条件</h5></div>
 
-                <div class="panel-body">
-                    <div class="row margin_tb_5">
-                        <div class="col-sm-3">
-                            <div class="input-group">
-                                <span class="input-group-addon">
-                                    <i class="fa fa-credit-card"></i> 学号
-                                </span>
-                                <input type="text" class="form-control" id="query_stu_no" placeholder="请输入学号" autocomplete="off" />
-                            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-sm-3 margin_tb_5">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="fa fa-credit-card"></i> 学号
+                            </span>
+                            <input type="text" class="form-control" id="query_stu_no" placeholder="请输入学号" autocomplete="off" />
                         </div>
-                        <div class="col-sm-3">
-                            <div class="input-group">
-                                <span class="input-group-addon">
-                                    <i class="fa fa-user"></i> 姓名
-                                </span>
-                                <input type="text" class="form-control" id="query_stu_nm" placeholder="请输入姓名" autocomplete="off" />
-                            </div>
+                    </div>
+                    <div class="col-sm-3 margin_tb_5">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="fa fa-user"></i> 姓名
+                            </span>
+                            <input type="text" class="form-control" id="query_stu_nm" placeholder="请输入姓名" autocomplete="off" />
                         </div>
-                        <div class="col-sm-4">
-                            <div class="input-group">
-                                <span class="input-group-addon">
-                                    <i class="fa fa-building-o"></i> 在读情况
-                                </span>
-                                <div class="input-group-btn">
-                                    <button type="button" class="btn btn-default" name="stu_StudyStatus" data-studystatus="-1">全部</button>
-                                    <button type="button" class="btn btn-primary" name="stu_StudyStatus" data-studystatus="1">在读</button>
-                                    <button type="button" class="btn btn-default" name="stu_StudyStatus" data-studystatus="0">不在读</button>
-                                </div>
-                            </div>
+                    </div>
+                    <div class="col-sm-3 margin_tb_5">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="fa fa-user"></i> 科目
+                            </span>
+                            <select class="form-control" id="query_exam_course">
+                                <option value="all">全部</option>
+                            </select>
                         </div>
-                        <div class="col-sm-2 text-right">
-                            <button type="button" id="btn_query" class="btn btn-primary btn-sm"><i class="fa fa-search"></i> 查询</button>
-                            <button type="reset" id="btn_reset" class="btn btn-info btn-sm"><i class="fa fa-refresh"></i> 重置</button>
+                    </div>
+                    <div class="col-sm-3 margin_tb_5">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="fa fa-user"></i> 考试名称
+                            </span>
+                            <input type="text" class="form-control" id="query_exam_nm" placeholder="请输入姓名" autocomplete="off" />
                         </div>
-                    </div><!-- /.row -->
-                </div>
-
+                    </div>
+                    <div class="col-sm-6 margin_tb_5">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="fa fa-calendar"></i> 考试时间
+                            </span>
+                            <input type="text" class="form-control" id="query_exam_time" placeholder="请选择考试时间" readonly />
+                        </div>
+                    </div>
+                    <div class="col-sm-3 margin_tb_5">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="fa fa-calendar"></i> 班级
+                            </span>
+                            <select class="form-control" id="query_stu_class">
+                                <option value="all">全部</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 text-right margin_tb_5">
+                        <button type="button" id="btn_query" class="btn btn-primary btn-sm"><i class="fa fa-search"></i> 查询</button>
+                        <button type="reset" id="btn_reset" class="btn btn-info btn-sm"><i class="fa fa-refresh"></i> 重置</button>
+                    </div>
+                </div><!-- /.row -->
             </div>
+
         </div>
     </form>
 
@@ -88,7 +97,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="StudentScore_ModalLabel">学生信息维护</h4>
+                    <h4 class="modal-title" id="StudentScore_ModalLabel">学生成绩维护</h4>
                 </div>
                 <div class="modal-body">
                     <div class="row">
@@ -106,7 +115,7 @@
                         <div class="col-sm-12 margin_tb_5">
                             <div class="input-group">
                                 <label for="txt_stu_info" class="input-group-addon form_noempty">考试</label>
-                                <input type="text" class="form-control" id="txt_stu_info" placeholder="请选择一场考试" autocomplete="off" disabled>
+                                <input type="text" class="form-control" id="txt_stu_exam" placeholder="请选择一场考试" autocomplete="off" disabled>
                                 <div class="input-group-btn">
                                     <button type="button" class="btn btn-success btn-select-exam">
                                         <i class="fa fa-search"></i> 选择
@@ -117,7 +126,7 @@
                         <div class="col-sm-12 margin_tb_5">
                             <div class="input-group">
                                 <label for="txt_stu_info" class="input-group-addon form_noempty">得分</label>
-                                <input type="text" class="form-control" id="txt_stu_info" placeholder="请输入得分(必填)" autocomplete="off">
+                                <input type="text" class="form-control" id="txt_stu_score" placeholder="请输入得分(必填)" autocomplete="off">
                                 <span class="input-group-addon">.00</span>
                             </div>
                         </div>
@@ -132,31 +141,55 @@
     </div>
 </form>
 
-@*@Html.RenderPartial()*@
+@{Html.RenderAction("Share_Students", "Common", new {fnName="stuCallback"});}
 
-@{Html.RenderAction("Share_Students", "Common");}
+@{Html.RenderAction("Share_Exams", "Common", new { fnName = "examCallback" });}
 
 <script type="text/javascript">
     window.curlocation = ['学生管理', '成绩管理'];
 
     $(function () {
         var cur_operatype;//当前操作类型
+
         //初始化 日期插件
-        $(".datepicker").datetimepicker({
-            language: 'zh-CN',
-            format: "yyyy-mm-dd",
-            showMeridian: true,
-            autoclose: true,
-            minView: 2,
-            todayBtn: true
+        var $daterange = $("#query_exam_time");
+
+        $daterange.attr({
+            "data-date-start": $.web.MonthFirstDay(),
+            "data-date-end": $.web.today(),
+            "readonly": true
+        })
+        .val($.web.MonthFirstDay() + " - " + $.web.today())
+        .daterangepicker(null, function (start, end, label) {
+            $daterange.attr({
+                "data-date-start": $.web.dateFormat(new Date(start), "yyyy-MM-dd"),
+                "data-date-end": $.web.dateFormat(new Date(end), "yyyy-MM-dd")
+            });
+
+        }).on('apply.daterangepicker', function (ev, picker) {
+            $daterange.attr({
+                "data-date-start": $.web.dateFormat(new Date(picker.startDate), "yyyy-MM-dd"),
+                "data-date-end": $.web.dateFormat(new Date(picker.endDate), "yyyy-MM-dd")
+            });
         });
 
-        $("[name='stu_StudyStatus']").click(function () {
-            if (!$(this).hasClass("btn-primary")) {
-                $(this).addClass("btn-primary").removeClass("btn-default").siblings(".btn-primary").removeClass("btn-primary").addClass("btn-default");
+        $.web.getAsync(document.weburl + "XT/GetCourses").done(function (xhr) {
+            switch (xhr.Ret.Key) {
+                case "success":
+                    $("#query_exam_course option:gt(0)").remove();
+
+                    $.each(xhr.Data, function (_i, _t) {
+                        $("#query_exam_course").append(
+                            $("<option>").text(_t.CourseName).val(_t.CourseName)
+                            ).data(_t);
+                    });
+
+                    break;
+                case "error":
+                    $.web.toast(xhr.Ret.Value);
+                    break;
             }
         });
-
 
         var $table = $('#table');
         $.web.bootstrapTable({
@@ -165,20 +198,24 @@
                 url: document.weburl + "Students/GetStudentsScore",
                 method: 'post',
                 toolbar: '#toolbar',    //工具按钮用哪个容器
-                exportOptions: { fileName: $.web.today() + "学生成绩" },
+                exportOptions: {
+                    fileName: $.web.today() + "学生成绩",
+                    ignoreColumn: [0],//忽略第1列
+                },
                 sortOrder: 'desc',
                 queryParams: function (params) {
                     var queryParams = {
                         offSet: params.offset,
                         pageSize: params.limit,
-                        orderBy: params.sort || "CreateTime",
+                        orderBy: params.sort || "ExamTime",
                         sortType: params.order,
                         filter: {
-                            StudentClass: "",
+                            StudentClass: $("#query_stu_class").val() == "all" ? "" : $("#query_stu_class").val(),
                             StudentCode: $("#query_stu_no").val(),
                             StudentName: $("#query_stu_nm").val(),
-                            Course:"",
-                            ExamID: ""
+                            Course: $("#query_exam_course").val() == "all" ? "" : $("#query_exam_course").val(),
+                            ExamTimeStart: $("#query_exam_time").val() ? $("#query_exam_time").attr("data-date-start") : "",
+                            ExamTimeEnd: $("#query_exam_time").val() ? $("#query_exam_time").attr("data-date-end") : ""
                         }
                         //Sno: $("#query_stu_no").val(),
                         //Snm: $("#query_stu_nm").val(),
@@ -198,7 +235,13 @@
                     { title: '姓名', field: 'StudentName', align: 'center', valign: 'middle', sortable: true },
                     { title: '班级', field: 'StudentClass', align: 'center', valign: 'middle', sortable: true },
                     { title: '科目', field: 'Course', align: 'center', valign: 'middle', sortable: true },
-                    { title: '考试名称', field: 'no', align: 'center', valign: 'middle', sortable: true },
+                    { title: '考试名称', field: 'ExamName', align: 'center', valign: 'middle', sortable: true },
+                    {
+                        title: '考试时间', field: 'ExamTime', align: 'center', valign: 'middle', sortable: true,
+                        formatter: function (value) {
+                            return $.web.dateFormat(value,"yyyy-MM-dd HH:mm");
+                        }
+                    },
                     { title: '分数', field: 'Score', align: 'center', valign: 'middle', sortable: true }
                 ]
             }
@@ -219,12 +262,29 @@
             $score_modal.modal("show");
         });
 
+        var Modify_ScoreId;
         //修改
         $("#btn_Edit").click(function () {
             var rowData = $table.bootstrapTable('getSelections');
             if (rowData.length == 0) { $.web.toast("请选择一行数据！"); return; }
             cur_operatype = "modify";
             rowData = rowData[0];
+            Modify_ScoreId = rowData.ScoreID;
+
+            $("#txt_stu_info").attr({
+                "data-stu-no": rowData.StudentCode,
+                "data-stu-name": rowData.StudentName,
+                "data-stu-class": rowData.StudentClass
+            }).val(rowData.StudentName + "(" + rowData.StudentCode + ")");
+
+            $("#txt_stu_exam").attr({
+                "data-exam-id": rowData.ExamID,
+                "data-exam-time":$.web.dateFormat(rowData.ExamTime,"yyyy-MM-dd HH:mm:ss"),
+                "data-exam-name": rowData.ExamName,
+                "data-exam-course": rowData.Course
+            }).val(rowData.ExamName + "(" + rowData.Course + ")");
+
+            $("#txt_stu_score").val(rowData.Score)
 
             $score_modal.modal("show");
         });
@@ -234,7 +294,7 @@
             if (rowData.length == 0) { $.web.toast("请选择一行数据！"); return; }
             rowData = rowData[0];
             swal({
-                title: "确认删除所选学生信息?",
+                title: "确认删除所选学生考试成绩?",
                 text: "一旦删除无法恢复!",
                 type: "warning",
                 showCancelButton: true,
@@ -243,8 +303,8 @@
                 cancelButtonText: "否",
                 closeOnConfirm: false
             }, function () {
-                SaveStu({
-                    stu: { StudentCode: rowData.StudentCode },
+                SaveScore({
+                    score: { ScoreID: rowData.ScoreID },
                     operatype: "delete"
                 });
             });
@@ -253,59 +313,77 @@
         //保存
         $("#btn_submit").click(function () {
             var _valid = true, _validList = [
-                { selector: "#txt_stu_code", type: "text", errmsg: "学号不可为空" },
-                { selector: "#txt_stu_name", type: "text", errmsg: "姓名不可为空" },
-                { selector: "#txt_stu_BirthDay", type: "text", errmsg: "生日不可为空" },
-                { selector: "#txt_stu_class", type: "text", errmsg: "班级不可为空" }
+                { selector: "#txt_stu_info", type: "val", errmsg: "学生信息不可为空" },
+                { selector: "#txt_stu_exam", type: "val",errmsg: "考试试卷不可为空" },
+                { selector: "#txt_stu_score", type: "val", errmsg: "得分不可为空", reg: /^\d+(\.)?\d*$/,regerror:"分数不合法"}
             ], errret = {
                 cnt: 0,
                 msg: []
             };
 
             $.each(_validList, function (_i, _t) {
-                if (!$(_t.selector).val()) { errret.cnt++; errret.msg.push(_t.errmsg); }
-            });
+                if (!$(_t.selector).val())
+                {
+                    errret.cnt++; errret.msg.push(_t.errmsg);
+                }
+                else if(_t.reg)
+                {
+                    switch (_t.type) {
+                        case "val":
+                            if (!_t.reg.test($(_t.selector).val()))
+                            {
+                                errret.cnt++;
+                                errret.msg.push(_t.regerror);
+                            }
+                            break;
 
-            if (!$("#txt_stu_EnrollmentYear").val() || !(/^\d{4}$/.test($("#txt_stu_EnrollmentYear").val()))) {
-                errret.cnt++; errret.msg.push("入学年份必须为4位数字");
-            }
+                    }
+                }
+            });
 
             if (errret.cnt > 0) {
                 $.web.toast({ text: errret.msg.join(","), duration: 5000 });
                 return;
             }
 
-            var _stu = {
-                StudentCode: $("#txt_stu_code").val(),
-                StudentName: $("#txt_stu_name").val(),
-                Sex: $("[name='stu_sex']:radio:checked").val() == 1 ? true : false,
-                StudentClass: $("#txt_stu_class").val(),
-                BirthDay: $("#txt_stu_BirthDay").val(),
-                StudyStatus: $("[name='stu_StudyStatus']:radio:checked").val() == 1 ? true : false,
-                EnrollmentYear: $("#txt_stu_EnrollmentYear").val()
+            var _score = {
+                ScoreID:Modify_ScoreId||"",
+                StudentCode: $("#txt_stu_info").attr("data-stu-no"),
+                StudentName: $("#txt_stu_info").attr("data-stu-name"),
+                StudentClass: $("#txt_stu_info").attr("data-stu-class"),
+
+                ExamID: $("#txt_stu_exam").attr("data-exam-id"),
+                ExamTime: $("#txt_stu_exam").attr("data-exam-time"),
+                ExamName: $("#txt_stu_exam").attr("data-exam-name"),
+                Course: $("#txt_stu_exam").attr("data-exam-course"),
+                Score: $("#txt_stu_score").val()
             };
 
             var _obj = {
-                stu: _stu,
+                score: _score,
                 operatype: cur_operatype
             };
 
-            SaveStu(_obj);
+            SaveScore(_obj);
 
         });
 
         $score_modal.find(".btn-select-stu").click(function () {
             $("#ShareStudents_Modal").modal("show");
         });
+
+        $score_modal.find(".btn-select-exam").click(function () {
+            $("#ShareExams_Modal").modal("show");
+        });
     });
 
 
-    function SaveStu(data) {
-        $.web.post(document.weburl + "Students/StudentsSave", data).done(function (xhr) {
+    function SaveScore(data) {
+        $.web.post(document.weburl + "Students/StudentsScoreSave", data).done(function (xhr) {
             switch (xhr.Key) {
                 case "success":
                     swal("操作成功", "你的操作已经成功执行", "success");
-                    $("#Students_Modal").modal("hide");
+                    $("#StudentScore_Modal").modal("hide");
                     $('#table').bootstrapTable('refresh');
                     break;
                 default:
@@ -314,5 +392,23 @@
 
             }
         });
+    }
+
+    function stuCallback(data)
+    {
+        $("#txt_stu_info").attr({
+            "data-stu-no": data.StudentCode,
+            "data-stu-name": data.StudentName,
+            "data-stu-class": data.StudentClass,
+        }).val(data.StudentName + "(" + data.StudentCode + ")");
+    }
+
+    function examCallback(data) {
+        $("#txt_stu_exam").attr({
+            "data-exam-id": data.ExamID,
+            "data-exam-time":$.web.dateFormat(data.ExamTime,"yyyy-MM-dd HH:mm:ss"),
+            "data-exam-name":data.ExamName,
+            "data-exam-course":data.Course
+        }).val(data.ExamName + "(" + data.Course + ")");
     }
 </script>

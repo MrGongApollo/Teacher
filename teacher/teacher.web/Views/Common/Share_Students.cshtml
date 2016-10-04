@@ -1,6 +1,11 @@
 ﻿@Styles.Render("~/bundles/bootstrap-table/css")
 @Scripts.Render("~/bundles/bootstrap-table/js")
 
+<style type="text/css">
+    .modal-body > .row {margin-top: 1em;margin-bottom: 1em;}
+    .text_padding {padding: 5px;color: white;border-radius: 5px;}
+</style>
+
 <div class="modal fade" id="ShareStudents_Modal" tabindex="-1" role="dialog" aria-labelledby="ShareStudents_ModalLabel">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -69,7 +74,13 @@
 
         $modal.find(".btn_Sure").click(function () {
             var rowData = $share_stu_tb.bootstrapTable('getSelections');
-            if (rowData.length == 0) { $.web.toast("请选择一行数据！"); return; }
+            if (rowData.length == 0) { $.web.toast("请选择一行数据！"); return false; }
+            debugger
+            var _fncallbck = "@ViewBag.callback";
+            if (_fncallbck)
+            {
+                eval(_fncallbck)(rowData[0]);
+            }
             $modal.modal("hide");
         }).end().find(".btn_query").click(function () {
             $share_stu_tb.bootstrapTable("refresh");

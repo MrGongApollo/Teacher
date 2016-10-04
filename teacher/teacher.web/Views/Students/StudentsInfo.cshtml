@@ -15,48 +15,46 @@
 
 <div class="container-fluid">
     <form method="post">
-        <div class="panel-body nopadding">
-            <div class="panel panel-default">
-                <div class="panel-heading panel-headicon"><i class="fa fa-search"></i> <h5>查询条件</h5></div>
+        <div class="panel panel-default nomargin">
+            <div class="panel-heading panel-headicon"><i class="fa fa-search"></i> <h5>查询条件</h5></div>
 
-                <div class="panel-body">
-                    <div class="row margin_tb_5">
-                        <div class="col-sm-3 margin_tb_5">
-                            <div class="input-group">
-                                <span class="input-group-addon">
-                                    <i class="fa fa-credit-card"></i> 学号
-                                </span>
-                                <input type="text" class="form-control" id="query_stu_no" placeholder="请输入学号" autocomplete="off" />
+            <div class="panel-body">
+                <div class="row margin_tb_5">
+                    <div class="col-sm-3 margin_tb_5">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="fa fa-credit-card"></i> 学号
+                            </span>
+                            <input type="text" class="form-control" id="query_stu_no" placeholder="请输入学号" autocomplete="off" />
+                        </div>
+                    </div>
+                    <div class="col-sm-3 margin_tb_5">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="fa fa-user"></i> 姓名
+                            </span>
+                            <input type="text" class="form-control" id="query_stu_nm" placeholder="请输入姓名" autocomplete="off" />
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-4 margin_tb_5">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="fa fa-building-o"></i> 在读情况
+                            </span>
+                            <div class="input-group-btn">
+                                <button type="button" class="btn btn-default" name="stu_StudyStatus" data-studystatus="-1">全部</button>
+                                <button type="button" class="btn btn-primary" name="stu_StudyStatus" data-studystatus="1">在读</button>
+                                <button type="button" class="btn btn-default" name="stu_StudyStatus" data-studystatus="0">不在读</button>
                             </div>
                         </div>
-                        <div class="col-sm-3 margin_tb_5">
-                            <div class="input-group">
-                                <span class="input-group-addon">
-                                    <i class="fa fa-user"></i> 姓名
-                                </span>
-                                <input type="text" class="form-control" id="query_stu_nm" placeholder="请输入姓名" autocomplete="off" />
-                            </div>
-                        </div>
-                        <div class="col-sm-6 col-lg-4 margin_tb_5">
-                            <div class="input-group">
-                                <span class="input-group-addon">
-                                    <i class="fa fa-building-o"></i> 在读情况
-                                </span>
-                                <div class="input-group-btn">
-                                    <button type="button" class="btn btn-default" name="stu_StudyStatus" data-studystatus="-1">全部</button>
-                                    <button type="button" class="btn btn-primary" name="stu_StudyStatus" data-studystatus="1">在读</button>
-                                    <button type="button" class="btn btn-default" name="stu_StudyStatus" data-studystatus="0">不在读</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-12 col-lg-2 margin_tb_5 text-right">
-                            <button type="button" id="btn_query" class="btn btn-primary btn-sm"><i class="fa fa-search"></i> 查询</button>
-                            <button type="reset" id="btn_reset" class="btn btn-info btn-sm"><i class="fa fa-refresh"></i> 重置</button>
-                        </div>
-                    </div><!-- /.row -->
-                </div>
-
+                    </div>
+                    <div class="col-sm-12 col-lg-2 margin_tb_5 text-right">
+                        <button type="button" id="btn_query" class="btn btn-primary btn-sm"><i class="fa fa-search"></i> 查询</button>
+                        <button type="reset" id="btn_reset" class="btn btn-info btn-sm"><i class="fa fa-refresh"></i> 重置</button>
+                    </div>
+                </div><!-- /.row -->
             </div>
+
         </div>
     </form>
 
@@ -190,7 +188,10 @@
             option: {
                 url: document.weburl + "Students/GetStudents",// "odata/T_SysMenus",
                 toolbar: '#toolbar',    //工具按钮用哪个容器
-                exportOptions: { fileName: $.web.today() + "学生信息" },
+                exportOptions: {
+                    fileName: $.web.today() + "学生信息",
+                    ignoreColumn: [0],//忽略第1列
+                },
                 queryParams: function (params) {
                     var queryParams = {
                         offSet: params.offset,
@@ -301,9 +302,18 @@
                 cancelButtonText: "否",
                 closeOnConfirm: false
             }, function () {
-                SaveStu({
-                    stu: { StudentCode: rowData.StudentCode },
-                    operatype: "delete"
+                $.web.get(document.weburl + "Students/UpdateGraduate").done(function (xhr) {
+                    switch (xhr.Key) {
+                        case "success":
+                            swal("操作成功", "你的操作已经成功执行", "success");
+                            $("#Students_Modal").modal("hide");
+                            $('#table').bootstrapTable('refresh');
+                            break;
+                        default:
+                            swal("操作失败", xhr.Value, "error");
+                            break;
+
+                    }
                 });
             });
         });

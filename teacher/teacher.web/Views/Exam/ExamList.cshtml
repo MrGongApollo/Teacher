@@ -1,9 +1,421 @@
-﻿
-@{
-    ViewBag.Title = "ExamList";
-}
+﻿@Styles.Render("~/bundles/bootstrap-table/css")
+@Scripts.Render("~/bundles/bootstrap-table/js")
+@Styles.Render("~/bundles/bootstrap-daterangepicker/css")
+@Scripts.Render("~/bundles/bootstrap-daterangepicker/js")
+@Styles.Render("~/bundles/bootstrap-datetimepicker/css")
+@Scripts.Render("~/bundles/bootstrap-datetimepicker/js")
+
+
+<style type="text/css">
+    .modal-body > .row {margin-top: 1em;margin-bottom: 1em;}
+    #ExamPaper_form .modal-body{height:35rem;overflow:auto;}
+</style>
+
+<div class="container-fluid">
+    <form method="post">
+        <div class="panel panel-default nomargin">
+            <div class="panel-heading panel-headicon"><i class="fa fa-search"></i> <h5>查询条件</h5></div>
+
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-sm-6 col-lg-4 margin_tb_5">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="fa fa-calendar"></i> 考试时间
+                            </span>
+                            <input type="text" class="form-control" id="query_exam_date" placeholder="请选择考试时间" autocomplete="off" />
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3 margin_tb_5">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="fa fa-user"></i> 考试名称
+                            </span>
+                            <input type="text" class="form-control" id="query_exam_nm" placeholder="请输入考试名称" autocomplete="off" />
+                        </div>
+                    </div>
+                    <div class="col-sm-4 col-lg-3 margin_tb_5">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="fa fa-user"></i> 科目名称
+                            </span>
+                            <select class="form-control" id="query_course_nm">
+                                <option value="all">全部</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-8 col-lg-2 text-right margin_tb_5">
+                        <button type="button" id="btn_query" class="btn btn-primary btn-sm"><i class="fa fa-search"></i> 查询</button>
+                        <button type="reset" id="btn_reset" class="btn btn-info btn-sm"><i class="fa fa-refresh"></i> 重置</button>
+                    </div>
+                </div><!-- /.row -->
+            </div>
+
+        </div>
+    </form>
+
+    <div id="toolbar" class="btn-group">
+        <button id="btn_Add" type="button" class="btn btn-success">
+            <span class="fa fa-plus" aria-hidden="true"></span> 新增
+        </button>
+        <button id="btn_Edit" type="button" class="btn btn-warning">
+            <span class="fa fa-edit" aria-hidden="true"></span> 试题维护
+        </button>
+        <button id="btn_View" type="button" class="btn btn-primary">
+            <span class="fa fa-eye" aria-hidden="true"></span> 查看试题
+        </button>
+        <button id="btn_Delete" type="button" class="btn btn-danger">
+            <span class="fa fa-remove" aria-hidden="true"></span> 删除
+        </button>
+    </div>
+
+    <table id="table"></table>
+</div>
+
+<form id="Exam_form">
+    <div class="modal fade" id="Exam_Modal" tabindex="-1" role="dialog" aria-labelledby="Exam_ModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="Exam_ModalLabel">考试记录维护</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12 margin_tb_5">
+                            <div class="input-group">
+                                <label for="txt_stu_info" class="input-group-addon form_noempty">考试名称</label>
+                                <input type="text" class="form-control" id="txt_exam_nm" placeholder="请填写考试名称(必填)" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="col-sm-12 margin_tb_5">
+                            <div class="input-group">
+                                <label class="input-group-addon form_noempty">考试科目</label>
+                                <select class="form-control" id="txt_exam_course">
+                                    <option value="blank">请选择</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 margin_tb_5">
+                            <div class="input-group">
+                                <label for="txt_absent_time" class="input-group-addon form_noempty">考试时间</label>
+                                <input type="text" class="form-control datepicker" id="txt_exam_time" placeholder="选择考试时间(必选)" autocomplete="off">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>关闭</button>
+                    <button type="button" class="btn btn-primary btn-submit"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form id="ExamPaper_form">
+    <div class="modal fade" id="ExamPaper_Modal" tabindex="-1" role="dialog" aria-labelledby="ExamPaper_ModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="ExamPaper_ModalLabel">考试试题维护</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12 margin_tb_5">
+                            <div class="input-group">
+                                <label for="txt_stu_info" class="input-group-addon">考试名称</label>
+                                <input type="text" class="form-control" id="txt_paper_examname" autocomplete="off" readonly>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 margin_tb_5">
+                            <div class="input-group">
+                                <label class="input-group-addon">考试科目</label>
+                                <input class="form-control" id="txt_paper_course" readonly/>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 margin_tb_5">
+                            <div class="input-group">
+                                <label for="txt_absent_time" class="input-group-addon">考试时间</label>
+                                <input type="text" class="form-control" id="txt_paper_examtime" autocomplete="off" readonly>
+                                <span class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>关闭</button>
+                    <button type="button" id="btn_submit" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
 <script type="text/javascript">
     window.curlocation = ['试卷管理'];
-</script>
-<h2>ExamList</h2>
 
+    $(function () {
+        var cur_operatype;//当前操作类型
+        var $absent_modal = $("#AbsentResult_Modal");
+
+        $absent_modal.find(".btn-select-stu").click(function () {
+            $("#ShareStudents_Modal").modal("show");
+        });
+
+
+        //初始化 日期插件
+        var $daterange = $("#query_exam_date");
+
+        $daterange.attr({
+            "data-date-start": "",
+            "data-date-end": "",
+            "readonly": true
+        }).daterangepicker(null, function (start, end, label) {
+            $daterange.attr({
+                "data-date-start": $.web.dateFormat(new Date(start), "yyyy-MM-dd"),
+                "data-date-end": $.web.dateFormat(new Date(end), "yyyy-MM-dd")
+            });
+
+        }).on('apply.daterangepicker', function (ev, picker) {
+            $daterange.attr({
+                "data-date-start": $.web.dateFormat(new Date(picker.startDate), "yyyy-MM-dd"),
+                "data-date-end": $.web.dateFormat(new Date(picker.endDate), "yyyy-MM-dd")
+            });
+        });
+
+        //初始化 日期插件
+        $(".datepicker").attr("readonly", true).datetimepicker({
+            language: 'zh-CN',
+            format: "yyyy-mm-dd hh:mm:ss",
+            showMeridian: true,
+            autoclose: true,
+            //minView: 2,
+            todayBtn: true
+        });
+
+        $.web.getAsync(document.weburl + "XT/GetCourses").done(function (xhr) {
+            switch (xhr.Ret.Key) {
+                case "success":
+                    var $courseSel = $("#txt_exam_course");
+                    $("#txt_exam_course option:gt(0)").remove();
+                    $("#query_course_nm option:gt(0)").remove();
+
+                    $.each(xhr.Data, function (_i, _t) {
+                        $courseSel.append(
+                            $("<option>").text(_t.CourseName)
+                            ).data(_t);
+
+                        $("#query_course_nm").append(
+                            $("<option>").text(_t.CourseName).val(_t.CourseName)
+                            ).data(_t);
+                    });
+
+                    break;
+                case "error":
+                    $.web.toast(xhr.Ret.Value);
+                    break;
+            }
+        });
+
+        var $table = $('#table');
+        $.web.bootstrapTable({
+            selector: '#table',
+            option: {
+                url: document.weburl + "Exam/GetExam",
+                method: 'post',
+                toolbar: '#toolbar',    //工具按钮用哪个容器
+                showExport: false, //导出
+                exportOptions: {
+                    fileName: $.web.today() + "考试记录",
+                    ignoreColumn: [0],//忽略第1列
+                    onCellData: function ($cell, rowIndex, colIndex, result) {
+                        return colIndex == 5 && rowIndex > 0 ? $cell.find("span").attr("title") : result;
+                    }
+                },//导出excle 的配置
+                sortOrder: 'desc',
+                queryParams: function (params) {
+                    var queryParams = {
+                        offSet: params.offset,
+                        pageSize: params.limit,
+                        orderBy: params.sort || "ExamTime",
+                        sortType: params.order,
+                        filter: {
+                            Course: $("#query_course_nm").val() == "all" ? "" : $("#query_course_nm").val(),
+                            ExamName: $("#query_exam_nm").val(),
+                            ExamTimeStart:$("#query_exam_date").val()?$("#query_exam_date").attr("data-date-start"):"",
+                            ExamTimeEnd: $("#query_exam_date").val() ? $("#query_exam_date").attr("data-date-end") : "",
+
+                        }
+                    };
+                    return queryParams;
+                },
+                columns: [
+                    { checkbox: true, align: 'center', valign: 'middle' },
+                    {
+                        title: '行号', width: 20, align: 'center', valign: 'middle',
+                        formatter: function (value, row, index) {
+                            return index + 1;
+                        }
+                    },
+                    { title: '科目', field: 'Course', align: 'center', valign: 'middle', sortable: true},
+                    {title: '考试名称', field: 'ExamName', align: 'center', valign: 'middle', sortable: true},
+                    {title: '考试时间', field: 'ExamTime', align: 'center', valign: 'middle', sortable: true,
+                        formatter: function (value, row, index) {
+                            return $.web.dateFormat(value, "yyyy-MM-dd HH:mm");
+                        }
+                    }
+                ]
+            }
+        });
+
+
+
+        var $exam_modal = $("#Exam_Modal"),
+            $exampaper_modal = $("#ExamPaper_Modal");
+
+        //查询
+        $("#btn_query").click(function () {
+            $table.bootstrapTable('refresh');
+        });
+        //新增
+        $("#btn_Add").click(function () {
+            $("#Exam_form")[0].reset();
+            $("#Exam_Modal :input").attr("disabled", false);
+            cur_operatype = "add";
+            $exam_modal.modal("show");
+        });
+
+        //修改
+        $("#btn_Edit").click(function () {
+            var rowData = $table.bootstrapTable('getSelections');
+            if (rowData.length == 0) { $.web.toast("请选择一行数据！"); return; }
+            $exampaper_modal.modal("show");
+
+            $("#txt_paper_examname").val(rowData[0].ExamName);
+            $("#txt_paper_course").val(rowData[0].Course);
+            $("#txt_paper_examtime").val($.web.dateFormat(rowData[0].ExamTime, "yyyy-MM-dd HH:mm:ss"));
+
+            $("#Exam_Modal :input").attr("disabled", true);
+            $("#btn_submit").prev().attr("disabled", false);
+        });
+
+        //查看
+        $("#btn_View").click(function () {
+            var rowData = $table.bootstrapTable('getSelections');
+            if (rowData.length == 0) { $.web.toast("请选择一行数据！"); return; }
+            $exampaper_modal.modal("show");
+
+            $("#txt_exam_reason").val(rowData[0].Reason);
+            $("#Exam_Modal :input").attr("disabled", true);
+            $("#btn_submit").prev().attr("disabled", false);
+        });
+
+        //删除
+        $("#btn_Delete").click(function () {
+            var rowData = $table.bootstrapTable('getSelections');
+            if (rowData.length == 0) { $.web.toast("请选择一行数据！"); return; }
+            rowData = rowData[0];
+            swal({
+                title: "确认删除所选请假记录?",
+                text: "一旦删除无法恢复!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "是",
+                cancelButtonText: "否",
+                closeOnConfirm: false
+            }, function () {
+                SaveExam({
+                    exam: { ExamID: rowData.ExamID },
+                    operatype: "delete"
+                });
+            });
+        });
+
+        //保存
+        $("#Exam_Modal .btn-submit").click(function () {
+            var _valid = true, _validList = [
+                { selector: "#txt_exam_nm",type:"val",errmsg: "考试名称不可为空" },
+                { selector: "#txt_exam_course", type: "select", errmsg: "考试科目不可为空" },
+                { selector: "#txt_exam_time", type: "val", errmsg: "考试时间不可为空" }
+            ], errret = {
+                cnt: 0,
+                msg: []
+            };
+
+            $.each(_validList, function (_i, _t) {
+                switch (_t.type) {
+                    case "val":
+                        if (!$(_t.selector).val()) {
+                            errret.cnt++; errret.msg.push(_t.errmsg);
+                        }
+                        break;
+                    default:
+                        if ($(_t.selector).val() == "blank") {
+                            errret.cnt++; errret.msg.push(_t.errmsg);
+                        }
+                        break;
+
+                }
+               
+            });
+
+            if (errret.cnt > 0) {
+                $.web.toast({ text: errret.msg.join(","), duration: 5000 });
+                return;
+            }
+
+            var _exam = {
+                ExamName: $("#txt_exam_nm").val(),
+                Course: $("#txt_exam_course").val(),
+                ExamTime: $("#txt_exam_time").val()
+            };
+
+            var _obj = {
+                exam: _exam,
+                operatype: cur_operatype
+            };
+
+            SaveExam(_obj);
+
+        });
+
+    });
+
+
+    function SaveExam(data) {
+        
+        $.web.post(document.weburl + "Exam/ExamSave", data).done(function (xhr) {
+            switch (xhr.Key) {
+                case "success":
+                    swal("操作成功", "你的操作已经成功执行", "success");
+                    if (data.operatype == "add")
+                    {
+                        $("#Exam_Modal").modal("hide");
+                    }
+                    $('#table').bootstrapTable('refresh');
+                    break;
+                default:
+                    swal("操作失败", xhr.Value, "error");
+                    break;
+
+            }
+        });
+    }
+
+    function stuCallback(data) {
+        $("#txt_stu_info").attr({
+            "data-stu-code": data.StudentCode,
+            "data-stu-name": data.StudentName
+        }).val(data.StudentName + "(" + data.StudentCode + ")");
+    }
+</script>

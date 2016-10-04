@@ -605,6 +605,7 @@
     <Content Include="Views\Lottery\LotteryResult.cshtml" />
     <Content Include="Views\Common\Share_Students.cshtml" />
     <Content Include="Views\Common\Share_Exams.cshtml" />
+    <Content Include="Views\XT\XT_Setting.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\teacher.Data\teacher.Data.csproj">

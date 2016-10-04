@@ -1,7 +1,168 @@
-﻿
-@{
-    ViewBag.Title = "Share_Exams";
-}
+﻿@Styles.Render("~/bundles/bootstrap-table/css")
+@Scripts.Render("~/bundles/bootstrap-table/js")
 
-<h2>Share_Exams</h2>
+<style type="text/css">
+    .modal-body > .row {margin-top: 1em;margin-bottom: 1em;}
+</style>
 
+<div class="modal fade" id="ShareExams_Modal" tabindex="-1" role="dialog" aria-labelledby="ShareExams_ModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="ShareExams_ModalLabel">考试记录</h4>
+            </div>
+            <div class="modal-body">
+                <form method="post">
+                    <div class="row margin_tb_5">
+                        <div class="col-sm-5 margin_tb_5">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-credit-card"></i> 考试名称
+                                </span>
+                                <input type="text" class="form-control" id="share_query_exam_name" placeholder="请输入考试名称" autocomplete="off" />
+                            </div>
+                        </div>
+                        <div class="col-sm-4 margin_tb_5">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-user"></i> 考试科目
+                                </span>
+                                <select class="form-control" id="share_query_exam_course">
+                                    <option value="all">全部</option>
+                                </select>
+                            </div>
+                        </div>
+                        @*<div class="col-sm-6 col-lg-4 margin_tb_5">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-building-o"></i> 考试时间
+                                </span>
+                                <input type="text" class="form-control" id="share_query_exam_time" readonly/>
+                            </div>
+                        </div>*@
+                        <div class="col-sm-3 margin_tb_5 text-right">
+                            <button type="button" class="btn btn-primary btn-sm btn_query" title="查询">
+                                <i class="fa fa-search"></i>
+                            </button>
+                            <button type="reset" class="btn btn-info btn-sm btn_reset" title="重置"><i class="fa fa-refresh"></i></button>
+                        </div>
+                    </div><!-- /.row -->
+                </form>
+                <table id="share_exam_info"></table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"><span class="fa fa-close" aria-hidden="true"></span>关闭</button>
+                <button type="button" class="btn btn-success btn_Sure"><span class="fa fa-check" aria-hidden="true"></span>确认</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+
+        var $modal=$("#ShareExams_Modal"),
+            $share_exam_tb = $("#share_exam_info");
+
+        $modal.find(".btn_Sure").click(function () {
+            var rowData = $share_exam_tb.bootstrapTable('getSelections');
+            if (rowData.length == 0) { $.web.toast("请选择一行数据！"); return false; }
+            var _fncallbck = "@ViewBag.callback";
+            if (_fncallbck)
+            {
+                eval(_fncallbck)(rowData[0]);
+            }
+            $modal.modal("hide");
+        }).end().find(".btn_query").click(function () {
+            $share_exam_tb.bootstrapTable("refresh");
+        });
+
+
+        $.web.getAsync(document.weburl + "XT/GetCourses").done(function (xhr) {
+            switch (xhr.Ret.Key) {
+                case "success":
+                    $("#share_query_exam_course option:gt(0)").remove();
+
+                    $.each(xhr.Data, function (_i, _t) {
+                        $("#share_query_exam_course").append(
+                            $("<option>").text(_t.CourseName).val(_t.CourseName)
+                            ).data(_t);
+                    });
+
+                    break;
+                case "error":
+                    $.web.toast(xhr.Ret.Value);
+                    break;
+            }
+        });
+
+        //初始化 日期插件
+        //var $daterange = $("#share_query_exam_time");
+
+        //$daterange.attr({
+        //    "data-date-start": "",
+        //    "data-date-end": "",
+        //    "readonly": true
+        //}).daterangepicker(null, function (start, end, label) {
+        //    $daterange.attr({
+        //        "data-date-start": $.web.dateFormat(new Date(start), "yyyy-MM-dd"),
+        //        "data-date-end": $.web.dateFormat(new Date(end), "yyyy-MM-dd")
+        //    });
+
+        //}).on('apply.daterangepicker', function (ev, picker) {
+        //    $daterange.attr({
+        //        "data-date-start": $.web.dateFormat(new Date(picker.startDate), "yyyy-MM-dd"),
+        //        "data-date-end": $.web.dateFormat(new Date(picker.endDate), "yyyy-MM-dd")
+        //    });
+        //});
+
+
+
+        $.web.bootstrapTable({
+            selector: '#share_exam_info',
+            option: {
+                url: document.weburl + "Exam/GetExam",
+                showExport: false,
+                showColumns: false, //字段筛选
+                height: 350,
+                method: 'post',
+                queryParams: function (params) {
+                    var queryParams = {
+                        offSet: params.offset,
+                        pageSize: params.limit,
+                        orderBy: params.sort || "ExamTime",
+                        sortType: params.order,
+                        filter: {
+                            Course: $("#share_query_exam_course").val() == "all" ? "" : $("#share_query_exam_course").val(),
+                            ExamName: $("#share_query_exam_name").val(),
+                            ExamTimeStart: $("#share_query_exam_time").val() ? $("#share_query_exam_time").attr("data-date-start") : "",
+                            ExamTimeEnd: $("#share_query_exam_time").val() ? $("#share_query_exam_time").attr("data-date-end") : "",
+
+                        }
+                    };
+                    return queryParams;
+
+
+                },
+                columns:
+                    [
+    { checkbox: true, align: 'center', valign: 'middle' },
+    {
+        title: '行号', width: 20, align: 'center', valign: 'middle',
+        formatter: function (value, row, index) {
+            return index + 1;
+        }
+    },
+    { title: '科目', field: 'Course', align: 'center', valign: 'middle', sortable: true },
+    { title: '考试名称', field: 'ExamName', align: 'center', valign: 'middle', sortable: true },
+    {
+        title: '考试时间', field: 'ExamTime', align: 'center', valign: 'middle', sortable: true,
+        formatter: function (value, row, index) {
+            return $.web.dateFormat(value, "yyyy-MM-dd HH:mm:ss");
+        }
+    }
+                ]
+            }
+        });
+    });
+</script>

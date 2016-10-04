@@ -30,17 +30,19 @@ namespace teacher.web.Controllers
         /// 公共调用学生
         /// </summary>
         /// <returns></returns>
-        public ActionResult Share_Students()
+        public ActionResult Share_Students(string fnName="")
         {
-            return PartialView();
+            ViewBag.callback = fnName;
+            return PartialView(ViewBag);
         }
 
         /// <summary>
         /// 公共调用考试
         /// </summary>
         /// <returns></returns>
-        public ActionResult Share_Exams()
+        public ActionResult Share_Exams(string fnName = "")
         {
+            ViewBag.callback = fnName;
             return PartialView();
         }
 	}

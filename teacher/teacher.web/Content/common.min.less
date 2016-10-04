@@ -66,7 +66,10 @@ textarea{resize: none;}
 .padding_t_0{.pad_t(0);}
 .padding_b_0{.pad_b(0);}
 
+
 .padding_lr_5{.pad_l(5px);.pad_r(5px);}
+
+.padding_tb_0{.pad_t(0px);.pad_b(0px);}
 .padding_tb_5{.pad_t(5px);.pad_b(5px);}
 
 /**********通用*****************/
@@ -124,6 +127,9 @@ textarea{resize: none;}
 
         >.panel-heading.panel-headicon {
             background-color: #efefef;
+            &+.panel-body{
+                .padding_tb_0();
+            }
         }
     }
 
