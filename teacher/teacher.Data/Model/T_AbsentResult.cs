@@ -14,24 +14,19 @@ namespace teacher.Data.Models
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
-    [Table("T_Score")]
-    public partial class T_Score
+    [Table("T_AbsentResult")]
+    public partial class T_AbsentResult
     {
         /// <summary>
-        /// 主键ID
+        /// 请假编号
         /// </summary>
         [Key]
         [MaxLength(32)]
-        public string ScoreID { get; set; }
-        /// <summary>
-        /// 考试编号
-        /// </summary>
-        [MaxLength(32)]
-        public string ExamID { get; set; }
+        public string AbsentID { get; set; }
         /// <summary>
         /// 学号
         /// </summary>
-        [MaxLength(20)]
+        [MaxLength(32)]
         public string StudentCode { get; set; }
         /// <summary>
         /// 姓名
@@ -39,27 +34,22 @@ namespace teacher.Data.Models
         [MaxLength(50)]
         public string StudentName { get; set; }
         /// <summary>
-        /// 班级
+        /// 请假原因
         /// </summary>
-        [MaxLength(100)]
-        public string StudentClass { get; set; }
+        [MaxLength(500)]
+        public string Reason { get; set; }
+        
         /// <summary>
-        /// 科目
+        /// 请假时间起
         /// </summary>
-        [MaxLength(100)]
-        public string Course { get; set; }
+        public Nullable<System.DateTime> AbsentTimeBegin { get; set; }
         /// <summary>
-        /// 分数
+        /// 请假时间止
         /// </summary>
-        public Nullable<System.Decimal> Score { get; set; }
+        public Nullable<System.DateTime> AbsentTimeEnd { get; set; }
         /// <summary>
-        /// 考试名称
+        /// 创建时间
         /// </summary>
-        [MaxLength(200)]
-        public string ExamName { get; set; }
-        /// <summary>
-        /// 考试时间
-        /// </summary>
-        public Nullable<System.DateTime> ExamTime { get; set; }
+        public Nullable<System.DateTime> CreateTime { get; set; }
     }
 }

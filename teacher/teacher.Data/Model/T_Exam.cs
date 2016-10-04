@@ -14,44 +14,20 @@ namespace teacher.Data.Models
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
-    [Table("T_Score")]
-    public partial class T_Score
+    [Table("T_Exam")]
+    public partial class T_Exam
     {
-        /// <summary>
-        /// 主键ID
-        /// </summary>
-        [Key]
-        [MaxLength(32)]
-        public string ScoreID { get; set; }
         /// <summary>
         /// 考试编号
         /// </summary>
+        [Key]
         [MaxLength(32)]
         public string ExamID { get; set; }
         /// <summary>
-        /// 学号
-        /// </summary>
-        [MaxLength(20)]
-        public string StudentCode { get; set; }
-        /// <summary>
-        /// 姓名
-        /// </summary>
-        [MaxLength(50)]
-        public string StudentName { get; set; }
-        /// <summary>
-        /// 班级
-        /// </summary>
-        [MaxLength(100)]
-        public string StudentClass { get; set; }
-        /// <summary>
-        /// 科目
+        /// 所属科目
         /// </summary>
         [MaxLength(100)]
         public string Course { get; set; }
-        /// <summary>
-        /// 分数
-        /// </summary>
-        public Nullable<System.Decimal> Score { get; set; }
         /// <summary>
         /// 考试名称
         /// </summary>

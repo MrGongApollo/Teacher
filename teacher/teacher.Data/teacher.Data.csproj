@@ -61,9 +61,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\T_AbsentResult.cs" />
     <Compile Include="Model\T_LotteryGroup.cs" />
     <Compile Include="Model\T_LotteryUsers.cs" />
     <Compile Include="Model\T_LotteryResult.cs" />
+    <Compile Include="Model\T_Exam.cs" />
     <Compile Include="Model\T_Score.cs" />
     <Compile Include="Model\T_Students.cs" />
     <Compile Include="Model\T_User.cs" />
