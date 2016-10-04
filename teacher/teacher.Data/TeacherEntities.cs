@@ -32,6 +32,10 @@ namespace teacher.Data
 
         public DbSet<T_Exam> T_Exam { get; set; }
 
+        public DbSet<T_Course> T_Course { get; set; }
+
+        public DbSet<T_Class> T_Class { get; set; }
+
         public DbSet<T_Students> T_Students { get; set; }
         public DbSet<T_Score> T_Score { get; set; }
 

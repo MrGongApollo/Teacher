@@ -62,6 +62,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\T_AbsentResult.cs" />
+    <Compile Include="Model\T_Class.cs" />
+    <Compile Include="Model\T_Course.cs" />
     <Compile Include="Model\T_LotteryGroup.cs" />
     <Compile Include="Model\T_LotteryUsers.cs" />
     <Compile Include="Model\T_LotteryResult.cs" />

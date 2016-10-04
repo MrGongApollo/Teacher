@@ -48,7 +48,6 @@ namespace teacher.Data.Models
         /// <summary>
         /// 入学年份
         /// </summary>
-        [MaxLength(10)]
-        public string EnrollmentYear { get; set; }
+        public int EnrollmentYear { get; set; }
     }
 }
