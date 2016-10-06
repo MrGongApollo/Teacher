@@ -86,8 +86,7 @@
             }
         }).on('success.form.bv', function (e) {
             e.preventDefault();
-            debugger
-            $.web.post(document.weburl + "XT/UserSet", { UserID: $("#txt_u_id").val(), UserNickName: $("#txt_u_nick").val(), UserPSW: $("#txt_u_psw").val() == "nochangge" ? "" : $("#txt_u_psw").val() }).done(function (xhr) {
+            $.web.post(document.weburl + "XT/UserSet", { UserID: $("#txt_u_id").val(), UserNickName: $("#txt_u_nick").val(), UserPSW: $("#txt_u_psw").val() == "nochange" ? "" : $("#txt_u_psw").val() }).done(function (xhr) {
                 var IsValid = xhr.Ret.Key == "success";
                 swal("操作" + (IsValid ? "成功" : "失败"), xhr.Ret.Value, xhr.Ret.Key);
             });
