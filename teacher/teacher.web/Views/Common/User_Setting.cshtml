@@ -1,6 +1,4 @@
-﻿<style type="text/css">
-    #u_head_img{height:15rem;max-width:100%;}
-</style>
+﻿@Styles.Render("~/bundles/bootstrap-Validator/css")
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-8 col-sm-offset-2">
@@ -9,31 +7,40 @@
 
                 <div class="panel-body">
                     <div class="row margin_tb_5">
-                        <div class="col-sm-12">
-                        @{
-                            if (Session["User"] != null)
-                            {
-                                teacher.Data.Models.T_User CurU = Session["User"] as teacher.Data.Models.T_User;
-                                using (teacher.Data.TeacherEntities et = new teacher.Data.TeacherEntities())
-                                {
-                                    teacher.Data.Models.T_User User = et.T_User.FirstOrDefault(u => u.UserID == CurU.UserID);
-                                    <div class="input-group margin_tb_5">
-                                        <label class="input-group-addon" for="inputUserNickNm"><i class="fa fa-user"></i> 昵称</label>
-                                        <input type="text" class="form-control" id="inputUserNickNm" placeholder="请输入昵称" value="@User.UserNickName">
-                                    </div>
-                                    <div class="input-group margin_tb_5">
-                                        <label class="input-group-addon" for="txt_u_id"><i class="fa fa-credit-card"></i> 账号</label>
-                                        <input type="text" class="form-control" id="txt_u_id" placeholder="请输入新的账号（必填）" value="@User.UserID">
-                                    </div>
-                                    <div class="input-group margin_tb_5">
-                                        <label class="input-group-addon" for="txt_u_psw"><i class="fa fa-key"></i> 密码</label>
-                                        <input type="password" class="form-control" id="txt_u_psw" placeholder="请输入新的密码（必填）" value="nochange">
-                                    </div>
-                                }
-                            }
-                        }
-                            <div class="text-center margin_tb_5"><button class="btn btn-primary"><i class="fa fa-save"></i> 保存</button></div>
-                        </div>
+                        <form method="post" id="user_set_info">
+                            <div class="col-sm-12">
+                           @{
+                                        if (Session["User"] != null)
+                                        {
+                                            teacher.Data.Models.T_User CurU = Session["User"] as teacher.Data.Models.T_User;
+                                            using (teacher.Data.TeacherEntities et = new teacher.Data.TeacherEntities())
+                                            {
+                                                teacher.Data.Models.T_User User = et.T_User.FirstOrDefault(u => u.UserID == CurU.UserID);
+                                                <div class="form-group">
+                                                    <div class="input-group margin_tb_5">
+                                                        <label class="input-group-addon" for="inputUserNickNm"><i class="fa fa-user"></i> 昵称</label>
+                                                        <input type="text" class="form-control" id="txt_u_nick" name="usernick" placeholder="请输入昵称" value="@User.UserNickName">
+                                                    </div>
+                                                </div>
+                                        <div class="form-group">
+                                            <div class="input-group margin_tb_5">
+                                                <label class="input-group-addon" for="txt_u_id"><i class="fa fa-credit-card"></i> 账号</label>
+                                                <input type="text" class="form-control" id="txt_u_id" name="username" value="@User.UserID" disabled>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="input-group margin_tb_5">
+                                                <label class="input-group-addon" for="txt_u_psw"><i class="fa fa-key"></i> 密码</label>
+                                                <input type="password" class="form-control" id="txt_u_psw" name="password" placeholder="请输入新的密码（必填）" value="nochange">
+                                            </div>
+                                        </div>
+                                            }
+                                        }
+                                    }
+                                <div class="text-center margin_tb_5"><button class="btn btn-primary"><i class="fa fa-save"></i> 保存</button></div>
+                            </div>
+                        </form>
+                        
                     </div>
 
                 </div>
@@ -42,6 +49,48 @@
     </div>
 </div>
 
+@Scripts.Render("~/bundles/bootstrap-Validator/js")
 <script type="text/javascript">
     window.curlocation = ['个人设置'];
+
+    $(function ()
+    {
+        $('#user_set_info').bootstrapValidator({
+            message: '不合法的值类型',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                usernick: {
+                    message: '不合法的值类型',
+                    validators: {
+                        notEmpty: {
+                            message: '昵称不可为空'
+                        }
+                    }
+                },
+                password: {
+                    validators: {
+                        notEmpty: {
+                            message: '密码不可为空'
+                        },
+                        stringLength: {
+                            min: 6,
+                            max: 15,
+                            message: '密码长度不能小于6大于15'
+                        },
+                    }
+                }
+            }
+        }).on('success.form.bv', function (e) {
+            e.preventDefault();
+            debugger
+            $.web.post(document.weburl + "XT/UserSet", { UserID: $("#txt_u_id").val(), UserNickName: $("#txt_u_nick").val(), UserPSW: $("#txt_u_psw").val() == "nochangge" ? "" : $("#txt_u_psw").val() }).done(function (xhr) {
+                var IsValid = xhr.Ret.Key == "success";
+                swal("操作" + (IsValid ? "成功" : "失败"), xhr.Ret.Value, xhr.Ret.Key);
+            });
+        });
+    });
 </script>

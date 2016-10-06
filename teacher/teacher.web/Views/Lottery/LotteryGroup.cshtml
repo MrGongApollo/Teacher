@@ -1,4 +1,365 @@
-﻿<script type="text/javascript">
+﻿@Styles.Render("~/bundles/bootstrap-table/css")
+@Scripts.Render("~/bundles/bootstrap-table/js")
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-users"></i></span>
+                <input type="text" class="form-control" placeholder="请输入组别名称" id="txt_group_nm"/>
+                <div class="input-group-btn">
+                    <button type="button" class="btn btn-primary" id="btn_group_add">
+                        <i class="fa fa-plus"></i>
+                        添加
+                    </button> 
+                </div>
+            </div>
+            <ul class="list-group margin_tb_5" id="group-list"></ul>
+        </div>
+        <div class="col-sm-8">
+            <div id="toolbar" class="btn-group">
+                <button id="btn_Add" type="button" class="btn btn-success">
+                    <span class="fa fa-plus" aria-hidden="true"></span> 新增
+                </button>
+                <button id="btn_Delete" type="button" class="btn btn-danger">
+                    <span class="fa fa-remove" aria-hidden="true"></span> 删除
+                </button>
+            </div>
+            <table id="table"></table>
+        </div>
+    </div>
+</div>
+
+<form id="Students_form">
+    <div class="modal fade" id="Students_Modal" tabindex="-1" role="dialog" aria-labelledby="Students_ModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="Students_ModalLabel">抽奖组别成员维护</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12 margin_tb_5">
+                            <div class="input-group">
+                                <label for="txt_stu_code" class="input-group-addon form_noempty">模式</label>
+                                <select class="form-control" id="sel_mode">
+                                    <option value="class">班级</option>
+                                    <option value="stu">学生</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12 margin_tb_5">
+                            <div class="input-group">
+                                <label for="txt_stu_name" class="input-group-addon form_noempty">班级</label>
+                                <select class="form-control" id="txt_class_info">
+                                    <option value="blank">请选择</option>
+                                </select>
+                                <input type="text" class="form-control mode_stu hide" id="txt_stu_info" placeholder="请选择学生(必选)" autocomplete="off">
+                                <div class="input-group-btn mode_stu hide">
+                                    <button type="button" class="btn btn-success btn-select-stu">
+                                        <i class="fa fa-search"></i> 选择
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-sm"><span class="color-red">友情提示：</span>如果本组别已经存在该组员，保存时候将会智能忽略此组员信息！</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>关闭</button>
+                    <button type="button" id="btn_submit" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@{Html.RenderAction("Share_Students", "Common", new { fnName = "stuCallback" });}
+
+<script type="text/javascript">
     window.curlocation = ['抽奖管理', '抽奖组别'];
+
+    $(function () {
+
+        var $table = $('#table');
+
+        InitGroup();
+
+        $.web.getAsync(document.weburl + "XT/GetClass").done(function (xhr) {
+            switch (xhr.Ret.Key) {
+                case "success":
+                    $("#txt_class_info option:gt(0)").remove();
+
+                    $.each(xhr.Data, function (_i, _t) {
+                        $("#txt_class_info").append(
+                            $("<option>").text(_t.ClassName).val(_t.ClassName)
+                            ).data(_t);
+                    });
+
+                    break;
+                case "error":
+                    $.web.toast(xhr.Ret.Value);
+                    break;
+            }
+        });
+
+        $.web.bootstrapTable({
+            selector: '#table',
+            option: {
+                url: document.weburl + "Lottery/GetLotteryGroupMembers",
+                method: 'post',
+                toolbar: '#toolbar',    //工具按钮用哪个容器
+                showExport: false, //导出
+                sortOrder: 'desc',
+                queryParams: function (params) {
+                    var queryParams = {
+                        offSet: params.offset,
+                        pageSize: params.limit,
+                        orderBy: params.sort || "CreateTime",
+                        sortType: params.order,
+                        LotteryGroupID: getGroupID()
+                    };
+                    return queryParams;
+                },
+                columns: [
+                    { checkbox: true, align: 'center', valign: 'middle' },
+                    {
+                        title: '行号', width: 20, align: 'center', valign: 'middle',
+                        formatter: function (value, row, index) {
+                            return index + 1;
+                        }
+                    },
+                    { title: '学号', field: 'StudentCode', align: 'center', valign: 'middle', sortable: true },
+                    { title: '姓名', field: 'StudentName', align: 'center', valign: 'middle', sortable: true },
+                    {
+                        title: '组别',align: 'center', valign: 'middle',
+                        formatter: function (value, row, index) {
+                            return $("#group-list>li.active").data("GroupName");
+                        }
+                    }
+                ]
+            }
+        });
+        
+        $("#sel_mode").change(function () {
+            var b=$(this).val() == "class";
+            $("#Students_Modal .modal-body")
+                .find(".hide")
+                .removeClass("hide")
+                .end()
+                .find(b ? ".mode_stu" : "#txt_class_info")
+                .addClass("hide");
+            $("#txt_class_info").prev().html(b ? "班级" : "学生");
+        });
+
+        $("#Students_Modal .btn-select-stu").click(function () {
+            $("#ShareStudents_Modal").modal("show");
+        });
+
+        //新增组别
+        $("#btn_group_add").click(function () {
+            if (!$("#txt_group_nm").val()) {
+                $.web.toast("组别不可为空！");
+                return;
+            }
+            SaveGroup(
+                {
+                    lotterygroup: { GroupName: $("#txt_group_nm").val() },
+                    operatype: "add"
+                });
+        });
+
+        //新增
+        $("#btn_Add").click(function () {
+            if (!getGroupID())
+            {
+                $.web.toast("请先选择一个组别!");
+                return;
+            }
+            $("#Students_form")[0].reset();
+            cur_operatype = "add";
+            $("#Students_Modal").modal("show");
+        });
+
+        //删除
+        $("#btn_Delete").click(function () {
+            var rowData = $table.bootstrapTable('getSelections');
+            if (rowData.length == 0) { $.web.toast("请选择一行数据！"); return; }
+            rowData = rowData[0];
+            swal({
+                title: "确认删除所选成员信息?",
+                text: "一旦删除无法恢复!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "是",
+                cancelButtonText: "否",
+                closeOnConfirm: false
+            }, function () {
+                SaveMember({
+                    member: { Value: rowData.MemberID },
+                    operatype: "delete"
+                });
+            });
+        });
+
+        //保存
+        $("#btn_submit").click(function () {
+            switch ($("#sel_mode").val()) {
+                case "class":
+                    if ($("#txt_class_info").val() == "blank")
+                    {
+                        $.web.toast({ text: "请选择一个班级！", duration: 5000 });
+                        return;
+                    }
+                    break;
+                case "stu":
+                    if (!$("#txt_stu_info").val()) {
+                        $.web.toast({ text: "请选择一个学生！", duration: 5000 });
+                        return;
+                    }
+                    break;
+            }
+
+            var _obj = {
+                member: {
+                    Key: $("#sel_mode").val(),
+                    Value: $("#group-list>li.active").data("LotteryGroupID") + "," + ($("#txt_stu_code").val() == "stu" ? $("#txt_stu_info").attr("data-stu-no") : $("#txt_class_info").val())
+                },
+                operatype: cur_operatype
+            };
+
+            SaveMember(_obj);
+
+        })
+    });
+
+    function SaveGroup(data, $del) {
+        $.web.post(document.weburl + "Lottery/LotteryGroupSave", data).done(function (xhr) {
+            switch (xhr.Ret.Key) {
+                case "success":
+                    swal("操作成功", "你的操作已经成功执行", "success");
+                    if (data.operatype == "add") {
+                        LoadGroup(xhr.Data);
+                    }
+                    else {
+                        $del.remove();
+                    }
+                    break;
+                default:
+                    swal("操作失败", xhr.Ret.Value, "error");
+                    break;
+
+            }
+        });
+    }
+
+    function InitGroup() {
+        $.web.get(document.weburl + "Lottery/GetLotteryGroup").done(function (xhr) {
+            switch (xhr.Ret.Key) {
+                case "success":
+                    $("#group-list").empty();
+                    $.each(xhr.Data, function (_i, _t) {
+                        LoadGroup(_t);
+                    });
+
+                    break;
+                case "error":
+                    $.web.toast(xhr.Ret.Value);
+                    break;
+            }
+        });
+    }
+
+    function LoadGroup(data)
+    {
+        $("#group-list").append(
+                                $("<li>", { "class": "list-group-item "+(data.IsDefault?"active":"") }).html(data.GroupName+(data.IsDefault?"<span class='color-red'>(默认)</span>":"")).append(
+                                $("<a>", { "href": "javascript:;", "class": "pull-right color-lightred","title":"删除" }).append($("<i>", { "class": "fa fa-remove" })).click(function (e) {
+                                    e.stopPropagation();
+                                    var $this = $(this),
+                                        Ckey = $this.closest("li.list-group-item").data("LotteryGroupID");
+
+                                    swal({
+                                        title: "确认删除所选组别?",
+                                        text: "一旦删除无法恢复!",
+                                        type: "warning",
+                                        showCancelButton: true,
+                                        confirmButtonColor: "#DD6B55",
+                                        confirmButtonText: "是",
+                                        cancelButtonText: "否",
+                                        closeOnConfirm: false
+                                    }, function () {
+                                        SaveGroup({
+                                            lotterygroup: { LotteryGroupID: Ckey },
+                                            operatype: "delete"
+                                        }, $this.closest("li.list-group-item"));
+                                    });
+                                })
+                                ).append(
+                                $("<a>", { "href": "javascript:;", "class": "pull-right color-lightred margin_lr_5", "title": "设为默认" }).append($("<i>", { "class": "fa fa-paperclip" })).click(function (e) {
+                                    e.stopPropagation();
+                                    var $this = $(this),
+                                        Ckey = $this.closest("li.list-group-item").data("LotteryGroupID");
+
+                                    swal({
+                                        title: "是否设为默认?",
+                                        text: "设置当前组别为默认抽奖组别!",
+                                        type: "warning",
+                                        showCancelButton: true,
+                                        confirmButtonColor: "#DD6B55",
+                                        confirmButtonText: "是",
+                                        cancelButtonText: "否",
+                                        closeOnConfirm: false
+                                    }, function () {
+                                        $.web.get(document.weburl + "Lottery/SetGroupDefault", { LotteryGroupID: Ckey }).done(function (xhr) {
+                                            switch (xhr.Ret.Key) {
+                                                case "success":
+                                                    swal("操作成功", xhr.Value, "success");
+                                                    InitGroup();
+                                                    break;
+                                                case "error":
+                                                    break;
+                                            }
+                                        });
+                                    });
+                                })
+                                ).click(function () {
+                                    if (!$(this).hasClass("active")) {
+                                        $(this).addClass("active").siblings(".active").removeClass("active");
+                                    }
+                                    $("#table").bootstrapTable("refresh");
+                                }).data(data)
+                            );
+    }
+
+    function SaveMember(data)
+    {
+        $.web.post(document.weburl + "Lottery/LotteryGroupMemberSave", data).done(function (xhr) {
+            switch (xhr.Ret.Key) {
+                case "success":
+                    swal("操作成功", xhr.Value, "success");
+                    $("#Students_Modal").modal("hide");
+                    $('#table').bootstrapTable('refresh');
+                    break;
+                default:
+                    swal("操作失败", xhr.Value, "error");
+                    break;
+
+            }
+        });
+    }
+
+    function getGroupID()
+    {
+        return $("#group-list>li.active").data("LotteryGroupID") || "";
+    }
+
+    function stuCallback(data) {
+        $("#txt_stu_info").attr({
+            "data-stu-no": data.StudentCode,
+            "data-stu-name": data.StudentName,
+        }).val(data.StudentName + "(" + data.StudentCode + ")");
+    }
 </script>
 

@@ -1,3 +1,158 @@
-﻿<script type="text/javascript">
+﻿@Styles.Render("~/bundles/bootstrap-table/css")
+@Scripts.Render("~/bundles/bootstrap-table/js")
+@Styles.Render("~/bundles/bootstrap-daterangepicker/css")
+@Scripts.Render("~/bundles/bootstrap-daterangepicker/js")
+
+
+<style type="text/css">
+    .modal-body > .row {
+        margin-top: 1em;
+        margin-bottom: 1em;
+    }
+</style>
+
+<div class="container-fluid">
+    <form method="post">
+        <div class="panel panel-default nomargin">
+            <div class="panel-heading panel-headicon"><i class="fa fa-search"></i> <h5>查询条件</h5></div>
+
+            <div class="panel-body">
+                <div class="row margin_tb_5">
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="fa fa-credit-card"></i> 学号
+                            </span>
+                            <input type="text" class="form-control" id="query_stu_no" placeholder="请输入学号" autocomplete="off" />
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="fa fa-user"></i> 姓名
+                            </span>
+                            <input type="text" class="form-control" id="query_stu_nm" placeholder="请输入姓名" autocomplete="off" />
+                        </div>
+                    </div>
+                    <div class="col-sm-4 text-right">
+                        <button type="button" id="btn_query" class="btn btn-primary btn-sm"><i class="fa fa-search"></i> 查询</button>
+                        <button type="reset" id="btn_reset" class="btn btn-info btn-sm"><i class="fa fa-refresh"></i> 重置</button>
+                    </div>
+                </div><!-- /.row -->
+            </div>
+
+        </div>
+    </form>
+
+    <div id="toolbar" class="btn-group">
+        <button id="btn_Delete" type="button" class="btn btn-danger">
+            <span class="fa fa-remove" aria-hidden="true"></span> 删除
+        </button>
+    </div>
+
+    <table id="table"></table>
+</div>
+
+<script type="text/javascript">
     window.curlocation = ['抽奖管理', '抽奖记录'];
+
+    $(function () {
+        var cur_operatype;//当前操作类型
+
+        //初始化 日期插件
+        var $daterange = $(".bootstrap-daterangepicker");
+
+        $daterange.attr({
+            "data-date-start": "",
+            "data-date-end": "",
+            "readonly": true
+        }).daterangepicker(null, function (start, end, label) {
+            $daterange.attr({
+                "data-date-start": $.web.dateFormat(new Date(start), "yyyy-MM-dd"),
+                "data-date-end": $.web.dateFormat(new Date(end), "yyyy-MM-dd")
+            });
+
+        }).on('apply.daterangepicker', function (ev, picker) {
+            $daterange.attr({
+                "data-date-start": $.web.dateFormat(new Date(picker.startDate), "yyyy-MM-dd"),
+                "data-date-end": $.web.dateFormat(new Date(picker.endDate), "yyyy-MM-dd")
+            });
+        });
+
+        var $table = $('#table');
+        $.web.bootstrapTable({
+            selector: '#table',
+            option: {
+                url: document.weburl + "Lottery/GetLotteryResults",
+                method: 'post',
+                toolbar: '#toolbar',    //工具按钮用哪个容器
+                showExport: false, //导出
+                exportOptions: {
+                    fileName: $.web.today() + "请假记录",
+                    ignoreColumn: [0],//忽略第1列
+                    onCellData: function ($cell, rowIndex, colIndex, result) {
+                        return colIndex == 5 && rowIndex > 0 ? $cell.find("span").attr("title") : result;
+                    }
+                },//导出excle 的配置
+                sortOrder: 'desc',
+                queryParams: function (params) {
+                    var queryParams = {
+                        offSet: params.offset,
+                        pageSize: params.limit,
+                        orderBy: params.sort || "CreateTime",
+                        sortType: params.order,
+                        filter: {
+                            StudentCode: $("#query_stu_no").val(),
+                            StudentName: $("#query_stu_nm").val()
+                        }
+                    };
+                    return queryParams;
+                },
+                columns: [
+                    { checkbox: true, align: 'center', valign: 'middle' },
+                    {
+                        title: '行号', width: 20, align: 'center', valign: 'middle',
+                        formatter: function (value, row, index) {
+                            return index + 1;
+                        }
+                    },
+                    { title: '学号', field: 'StudentCode', align: 'center', valign: 'middle', sortable: true },
+                    { title: '姓名', field: 'StudentName', align: 'center', valign: 'middle', sortable: true },
+                    {
+                        title: '创建时间', field: 'CreateTime', align: 'center', valign: 'middle', sortable: true,
+                        formatter: function (value, row, index) {
+                            return $.web.dateFormat(value, "yyyy-MM-dd HH:mm:ss");
+                        }
+                    }
+                ]
+            }
+        });
+
+        //查询
+        $("#btn_query").click(function () {
+            $table.bootstrapTable('refresh');
+        });
+
+        //删除
+        $("#btn_Delete").click(function () {
+            var rowData = $table.bootstrapTable('getSelections');
+            if (rowData.length == 0) { $.web.toast("请选择一行数据！"); return; }
+            rowData = rowData[0];
+            swal({
+                title: "确认删除所选请假记录?",
+                text: "一旦删除无法恢复!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "是",
+                cancelButtonText: "否",
+                closeOnConfirm: false
+            }, function () {
+                SaveAbsent({
+                    absent: { AbsentID: rowData.AbsentID },
+                    operatype: "delete"
+                });
+            });
+        });
+    });
 </script>

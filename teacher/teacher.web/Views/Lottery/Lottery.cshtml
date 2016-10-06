@@ -1,4 +1,166 @@
-﻿<script type="text/javascript">
+﻿<style type="text/css">
+    #lotteryContainer { border-radius: 5px;background-color:#c04d38;}
+    #lotteryContainer>h2{}
+    #lotteryList_box{height:35rem;overflow:auto;}
+    #lotteryList_box > li.list-group-item {background-color:transparent;border:0;}
+    #lottery_show{height:25rem;line-height:25rem;font-size:5rem;text-align:center;}
+
+    #start_lottery {
+        font-size: 30px;
+        height: 80px;
+        width: 80px;
+        line-height:80px;
+        text-align:center;
+        display:inline-block;
+        border-radius: 50%;
+        color:white;
+        cursor:pointer;
+    }
+    
+    #start_lottery.active {
+            animation: lottery 1s infinite;
+            -moz-animation: lottery 1s infinite; /* Firefox */
+            -webkit-animation: lottery 1s infinite; /* Safari and Chrome */
+            -o-animation: lottery 1s infinite; /* Opera */
+        }
+    #start_lottery>img {
+        width:100%;
+    }
+      @@keyframes lottery {
+            0%{
+            font-size:0;
+            transform: rotate(0deg);
+        }
+
+        100% {
+            font-size:30px;
+            transform: rotate(359deg);
+            -ms-transform: rotate(359deg); /* IE 9 */
+            -webkit-transform: rotate(359deg); /* Safari and Chrome */
+            -o-transform: rotate(359deg); /* Opera */
+            -moz-transform: rotate(359deg); /* Firefox */
+        }
+    }
+</style>
+<div class="container-fluid bg-khaki h_100_p">
+    <div class="row margin_tb_5">
+        <div class="col-sm-10 col-sm-offset-1">
+            <div class="row">
+                <div class="col-sm-8">
+                    <div id="lottery_show"></div>
+                    <p class="text-center"><span id="start_lottery" class="active bg-lightred">抽奖</span></p>
+                    <div class="input-group margin_tb_5">
+                        <span class="input-group-addon">
+                            <i class="fa fa-users"></i> 当前抽奖组别
+                        </span>
+                        @{
+                            string _val=string.Empty;
+                            try
+                            {
+                                using (teacher.Data.TeacherEntities et=new teacher.Data.TeacherEntities())
+                                {
+                                   teacher.Data.Models.T_LotteryGroup g= et.T_LotteryGroup.FirstOrDefault(l => l.IsDefault);
+                                   _val = g.GroupName;
+                                }
+                            }
+                            catch (Exception)
+                            {
+                                
+                            }
+                            finally
+                            {
+                                <input type="text" class="form-control" id="select_group" value="@_val" readonly/>
+                            }
+                        }
+                        
+                    </div>
+                    <p class="text-sm text-primary">友情提示:默认(当前)抽奖组别可在抽奖组别模块设置！</p>
+                </div>
+                <div class="col-sm-4" id="lotteryContainer">
+                    <h3 class="text-center font-yahei color-white">中奖名单</h3>
+                    <div id="lotteryList_box">
+                        <ul class="list-group"></ul>
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <p class="text-bold text-lg font-yahei">据说课堂上低头的小伙伴中奖概率会<em class="color-red">翻倍</em>哦~别怪我没告诉你！</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script type="text/javascript">
     window.curlocation = ['抽奖管理', '开始抽奖'];
+
+    var list = @Html.Raw(Json.Encode(ViewBag.Members)),
+        timerTick,
+        ranobj={
+            i:null,
+            lm:{
+                StudentCode:null,
+                StudentName:null
+            }
+        };
+
+    $(function () {
+        if(timerTick){
+            clearInterval(timerTick);
+        }
+        $("#start_lottery").click(function () {
+            if (!$("#select_group").val()) {
+                swal("警告", '请在"抽奖组别"设置一个默认组别', "warning");
+                return;
+            }
+            if(list.length==0){
+                swal("警告", '抽取人数应该大于0', "warning");
+                return;
+            }
+
+            if ($(this).hasClass("active"))
+            {
+                $(this).removeClass("active").text("停止");
+                StartLottery();
+            }
+            else
+            {
+                $(this).addClass("active").text("继续").attr("disabled",true);
+                StopLottery();
+            }
+        });
+    });
+
+    function StartLottery()
+    {
+        timerTick=setInterval(function()
+        {
+            var ran=Math.floor(Math.random()*list.length),
+                m=list[ran];
+            ranobj.lm.StudentCode=m.Key;
+            ranobj.lm.StudentName=m.Value;
+            ranobj.i=ran;
+            $("#lottery_show").text(m.Value+"("+m.Key+")");
+        },30);
+    }
+
+    function StopLottery()
+    {
+        if(timerTick){
+            clearInterval(timerTick);
+        }
+        list.splice(ranobj.i,1);
+        $.web.get(document.weburl+"Lottery/SaveLotteryResult",ranobj.lm).done(function(xhr) {
+            switch (xhr.Ret.Key) {
+                case "success":
+                    $("#lotteryList_box").prepend($("<li>",{"class":"list-group-item"}).text(xhr.Data.StudentName+"("+xhr.Data.StudentCode+")"));
+                    break;
+                default:
+        
+            }
+        }).always(function() {
+            $("#start_lottery").attr("disabled",false);
+        });
+    }
 </script>
 

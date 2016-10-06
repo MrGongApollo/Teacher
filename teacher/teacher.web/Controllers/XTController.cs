@@ -11,6 +11,7 @@ using teacher.Data;
 using teacher.Data.Models;
 using teacher.web.Models;
 using System.Linq.Dynamic;
+using teacher.web.Help;
 
 namespace teacher.web.Controllers
 {
@@ -409,6 +410,38 @@ namespace teacher.web.Controllers
             return JsonR();
         }
         #endregion
+        #endregion
+
+        #region 个人设置
+        /// <summary>
+        /// 个人设置
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult UserSet(T_User user)
+        {
+            base.fin_r = base.error_r;
+            try
+            {
+                using (TeacherEntities context = new TeacherEntities())
+                {
+                   T_User u= Session["User"] as T_User;
+                   T_User _u=context.T_User.FirstOrDefault(c => c.UserID == u.UserID);
+                    if(!string.IsNullOrEmpty(user.UserPSW)){
+                        _u.UserPSW = new CommonHelper().MD5(user.UserPSW);
+                    }
+                    _u.UserNickName = user.UserNickName;
+                    context.SaveChanges();
+                    base.fin_r = base.success_r;
+                }
+            }
+            catch (Exception ex)
+            {
+                base.fin_r.Value = ex.Message;
+            }
+            return JsonR();
+        }
         #endregion
     }
 }

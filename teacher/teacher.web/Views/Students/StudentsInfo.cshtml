@@ -126,7 +126,10 @@
                         <div class="col-md-6">
                             <div class="input-group">
                                 <label for="txt_stu_class" class="input-group-addon form_noempty">班级</label>
-                                <input class="form-control" type="text" id="txt_stu_class" placeholder="请输入班级(必填)" />
+                                @*<input class="form-control" type="text" id="txt_stu_class" placeholder="请输入班级(必填)" />*@
+                                <select class="form-control" id="txt_stu_class">
+                                    <option value="blank">请选择</option>
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -177,6 +180,24 @@
             if (!$(this).hasClass("btn-primary"))
             {
                 $(this).addClass("btn-primary").removeClass("btn-default").siblings(".btn-primary").removeClass("btn-primary").addClass("btn-default");
+            }
+        });
+
+        $.web.getAsync(document.weburl + "XT/GetClass").done(function (xhr) {
+            switch (xhr.Ret.Key) {
+                case "success":
+                    $("#txt_stu_class option:gt(0)").remove();
+
+                    $.each(xhr.Data, function (_i, _t) {
+                        $("#txt_stu_class").append(
+                            $("<option>").text(_t.ClassName).val(_t.ClassName)
+                            ).data(_t);
+                    });
+
+                    break;
+                case "error":
+                    $.web.toast(xhr.Ret.Value);
+                    break;
             }
         });
 
@@ -324,14 +345,30 @@
                 { selector: "#txt_stu_code", type: "text", errmsg: "学号不可为空" },
                 { selector: "#txt_stu_name", type: "text", errmsg: "姓名不可为空" },
                 { selector: "#txt_stu_BirthDay", type: "text", errmsg: "生日不可为空" },
-                { selector: "#txt_stu_class", type: "text", errmsg: "班级不可为空" }
+                { selector: "#txt_stu_class", type: "select", errmsg: "班级不可为空" }
+
             ], errret = {
                 cnt: 0,
                 msg: []
             };
 
             $.each(_validList, function (_i, _t) {
-                if (!$(_t.selector).val()) { errret.cnt++; errret.msg.push(_t.errmsg); }
+                switch (_t.type) {
+                    case "text":
+                        if (!$(_t.selector).val()) {
+                            errret.cnt++; errret.msg.push(_t.errmsg);
+                        }
+                        break;
+                    case "select":
+                        if ($(_t.selector).val() == "blank")
+                        {
+                            errret.cnt++; errret.msg.push(_t.errmsg);
+                        }
+                        break;
+                    default:
+
+                }
+                
             });
             
             if (!$("#txt_stu_EnrollmentYear").val() || !(/^\d{4}$/.test($("#txt_stu_EnrollmentYear").val()))) {

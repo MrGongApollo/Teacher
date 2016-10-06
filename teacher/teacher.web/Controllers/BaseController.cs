@@ -41,7 +41,7 @@ namespace teacher.web.Controllers
         #region 返回Json
         protected KeyValueModel success_r = new KeyValueModel { Key = "success", Value = "操作成功！" },
                 error_r = new KeyValueModel { Key = "error", Value = "操作失败！" },
-                fin_r = new KeyValueModel();
+                fin_r = new KeyValueModel { Key = "error", Value = "操作失败！" };
 
         public JsonResult JsonR(object obj)
         {

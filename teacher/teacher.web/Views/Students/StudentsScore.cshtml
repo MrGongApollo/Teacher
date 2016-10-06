@@ -33,7 +33,7 @@
                     <div class="col-sm-3 margin_tb_5">
                         <div class="input-group">
                             <span class="input-group-addon">
-                                <i class="fa fa-user"></i> 科目
+                                <i class="fa fa-book"></i> 科目
                             </span>
                             <select class="form-control" id="query_exam_course">
                                 <option value="all">全部</option>
@@ -43,7 +43,7 @@
                     <div class="col-sm-3 margin_tb_5">
                         <div class="input-group">
                             <span class="input-group-addon">
-                                <i class="fa fa-user"></i> 考试名称
+                                <i class="fa fa-newspaper-o"></i> 考试名称
                             </span>
                             <input type="text" class="form-control" id="query_exam_nm" placeholder="请输入姓名" autocomplete="off" />
                         </div>
@@ -59,7 +59,7 @@
                     <div class="col-sm-3 margin_tb_5">
                         <div class="input-group">
                             <span class="input-group-addon">
-                                <i class="fa fa-calendar"></i> 班级
+                                <i class="fa fa-building"></i> 班级
                             </span>
                             <select class="form-control" id="query_stu_class">
                                 <option value="all">全部</option>
@@ -181,6 +181,24 @@
                     $.each(xhr.Data, function (_i, _t) {
                         $("#query_exam_course").append(
                             $("<option>").text(_t.CourseName).val(_t.CourseName)
+                            ).data(_t);
+                    });
+
+                    break;
+                case "error":
+                    $.web.toast(xhr.Ret.Value);
+                    break;
+            }
+        });
+
+        $.web.getAsync(document.weburl + "XT/GetClass").done(function (xhr) {
+            switch (xhr.Ret.Key) {
+                case "success":
+                    $("#query_stu_class option:gt(0)").remove();
+
+                    $.each(xhr.Data, function (_i, _t) {
+                        $("#query_stu_class").append(
+                            $("<option>").text(_t.ClassName).val(_t.ClassName)
                             ).data(_t);
                     });
 

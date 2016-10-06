@@ -160,7 +160,7 @@ function fnAjaxError(xhr, status, error)
 {
     if (xhr.status == 908)
     {
-        swal("用户当前身份过期", "1秒后自动跳转", "error");
+        swal("当前身份过期", "请重新登录(1秒后自动跳转)", "error");
         window.location.replace(document.weburl + "Login/Index");
     }
     else {

@@ -467,7 +467,7 @@
                 dataLocale: "zh-CN", //表格汉化
                 search: false, //显示搜索框
                 pageSize: 10, //每页的记录行数（*）
-                pageList: [10, 15, 20, 25], //分页选择
+                pageList: [10, 15, 20, 'all'], //分页选择
                 pageNumber: 1, //初始化加载第一页，默认第一页
                 pagination: true, //分页
 

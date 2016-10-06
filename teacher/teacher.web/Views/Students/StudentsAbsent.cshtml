@@ -186,7 +186,7 @@
                         title: '请假原因', field: 'Reason', align: 'center', valign: 'middle', sortable: true,
                         formatter: function (value, row, index)
                         {
-                            return "<span title='"+value+"'>"+$.web.Substr(value,20,"...")+"</span>";
+                            return value?"<span title='"+value+"'>"+$.web.Substr(value,20,"...")+"</span>":"";
                         }
                     },
                     {

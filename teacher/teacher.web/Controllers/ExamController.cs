@@ -135,5 +135,98 @@ namespace teacher.web.Controllers
         }
         #endregion
         #endregion
+
+        #region 试题
+        #region 获取班级名称
+        [HttpGet]
+        public JsonResult GetQuestions(string ExamID)
+        {
+            try
+            {
+                using (TeacherEntities context = new TeacherEntities())
+                {
+                    var list = context.T_Question.Where(q => q.ExamID == ExamID).OrderBy(c => c.QuestionNo).ToList();
+                    base.fin_r = base.success_r;
+                    return JsonR(list, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                base.fin_r.Value = ex.Message;
+            }
+            return JsonR(JsonRequestBehavior.AllowGet);
+        }
+        #endregion
+        #region 试题维护
+        /// <summary>
+        /// 试题维护
+        /// </summary>
+        /// <param name="qs">试题</param>
+        /// <param name="operatype">操作类型</param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult QuestionSave(T_Question qs, string operatype)
+        {
+            try
+            {
+                using (TeacherEntities context = new TeacherEntities())
+                {
+                    switch (operatype)
+                    {
+                        #region 新增
+                        case "add":
+                            qs.QuestionID = Guid.NewGuid().ToString("N");
+                            context.T_Question.Add(qs);
+                            context.SaveChanges();
+                            base.fin_r = base.success_r;
+                            return JsonR(qs);
+                            break;
+                        #endregion
+                        #region 修改
+                        case "modify":
+                            T_Question _Q = context.T_Question.FirstOrDefault(q => q.QuestionID == qs.QuestionID);
+                            if (_Q != null)
+                            {
+                                _Q.QuestionNo = qs.QuestionNo;
+                                _Q.Question = qs.Question;
+                                _Q.Answer = qs.Answer;
+                                context.SaveChanges();
+                                base.fin_r = base.success_r;
+                                return JsonR(_Q);
+                            }
+                            else
+                            {
+                                base.fin_r.Value = "未能找到此试题，可能已被删除！";
+                            }
+                            break;
+                        #endregion
+                        #region 删除
+                        case "delete":
+                            T_Question _QS = context.T_Question.FirstOrDefault(q => q.QuestionID == q.QuestionID);
+                            if (_QS != null)
+                            {
+                                context.T_Question.Remove(_QS);
+                                context.SaveChanges();
+                                base.fin_r = base.success_r;
+                            }
+                            else
+                            {
+                                base.fin_r.Value = "未能找到此试题，可能已被删除！";
+                            }
+                            break;
+                        #endregion
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                base.fin_r.Value = ex.Message;
+            }
+
+            return JsonR();
+        }
+        #endregion
+        #endregion
+        
     }
 }
