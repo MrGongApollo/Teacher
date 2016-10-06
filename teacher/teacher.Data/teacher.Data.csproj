@@ -64,11 +64,13 @@
     <Compile Include="Model\T_AbsentResult.cs" />
     <Compile Include="Model\T_Class.cs" />
     <Compile Include="Model\T_Course.cs" />
+    <Compile Include="Model\T_Question.cs" />
     <Compile Include="Model\T_LotteryGroup.cs" />
     <Compile Include="Model\T_LotteryUsers.cs" />
     <Compile Include="Model\T_LotteryResult.cs" />
     <Compile Include="Model\T_Exam.cs" />
     <Compile Include="Model\T_Score.cs" />
+    <Compile Include="Model\T_LotteryGroupMember.cs" />
     <Compile Include="Model\T_Students.cs" />
     <Compile Include="Model\T_User.cs" />
     <Compile Include="Model\T_SysMenus.cs" />

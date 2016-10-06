@@ -14,16 +14,29 @@ namespace teacher.Data.Models
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
-    [Table("T_LotteryGroup")]
-    public partial class T_LotteryGroup
+    [Table("T_LotteryGroupMember")]
+    public partial class T_LotteryGroupMember
     {
         [Key]
-        public int LotteryGroupID { get; set; }
-        [MaxLength(200)]
-        public string GroupName { get; set; }
+        [MaxLength(32)]
+        public string MemberID { get; set; }
         /// <summary>
-        /// 是否是默认
+        /// 抽奖分组编号
         /// </summary>
-        public bool IsDefault { get; set; }
+        public int LotteryGroupID { get; set; }
+        /// <summary>
+        /// 学号
+        /// </summary>
+        [MaxLength(20)]
+        public string StudentCode { get; set; }
+        /// <summary>
+        /// 姓名
+        /// </summary>
+        [MaxLength(50)]
+        public string StudentName { get; set; }
+        /// <summary>
+        /// 创建时间
+        /// </summary>
+        public Nullable<System.DateTime> CreateTime { get; set; }
     }
 }
