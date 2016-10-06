@@ -2,7 +2,7 @@
     #lotteryContainer { border-radius: 5px;background-color:#c04d38;}
     #lotteryContainer>h2{}
     #lotteryList_box{height:35rem;overflow:auto;}
-    #lotteryList_box > li.list-group-item {background-color:transparent;border:0;}
+    #lotteryList_box>ul> li.list-group-item {background-color:transparent;border:0;}
     #lottery_show{height:25rem;line-height:25rem;font-size:5rem;text-align:center;}
 
     #start_lottery {
@@ -79,7 +79,7 @@
                 <div class="col-sm-4" id="lotteryContainer">
                     <h3 class="text-center font-yahei color-white">中奖名单</h3>
                     <div id="lotteryList_box">
-                        <ul class="list-group"></ul>
+                        <ul class="list-group color-khaki"></ul>
                     </div>
                 </div>
                 <div class="col-sm-12">
@@ -153,7 +153,7 @@
         $.web.get(document.weburl+"Lottery/SaveLotteryResult",ranobj.lm).done(function(xhr) {
             switch (xhr.Ret.Key) {
                 case "success":
-                    $("#lotteryList_box").prepend($("<li>",{"class":"list-group-item"}).text(xhr.Data.StudentName+"("+xhr.Data.StudentCode+")"));
+                    $("#lotteryList_box>ul").prepend($("<li>",{"class":"list-group-item text-center"}).text(xhr.Data.StudentName+"("+xhr.Data.StudentCode+")"));
                     break;
                 default:
         
