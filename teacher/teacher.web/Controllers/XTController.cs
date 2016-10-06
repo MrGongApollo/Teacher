@@ -19,16 +19,6 @@ namespace teacher.web.Controllers
     public class XTController : BaseController
     {
         #region 视图
-        public ActionResult XT_FontIcons()
-        {
-            return View();
-        }
-
-        public ActionResult XT_SysMenus()
-        {
-            return View();
-        }
-
         public ActionResult XT_Setting()
         {
             return View();
@@ -244,6 +234,7 @@ namespace teacher.web.Controllers
         #endregion
         #endregion
 
+        #region 系统设置
         #region 科目
         #region 获取科目名称
         [HttpGet]
@@ -411,6 +402,98 @@ namespace teacher.web.Controllers
         }
         #endregion
         #endregion
+
+        #region 格式化数据库
+        [HttpGet]
+        public ActionResult DbDestroy()
+        {
+            try
+            {
+                using (TeacherEntities et=new TeacherEntities())
+                {
+                    #region 请假记录表
+                    var AbsentResultList = et.T_AbsentResult;
+                    foreach (var item in AbsentResultList)
+                    {
+                        et.T_AbsentResult.Remove(item);
+                    }
+                    #endregion
+                    #region 班级表
+                    var ClassList = et.T_Class;
+                    foreach (var item in ClassList)
+                    {
+                        et.T_Class.Remove(item);
+                    }
+                    #endregion
+                    #region 科目表
+                    var CourseList = et.T_Course;
+                    foreach (var item in CourseList)
+                    {
+                        et.T_Course.Remove(item);
+                    }
+                    #endregion
+                    #region 考试表
+                    var ExamList = et.T_Exam;
+                    foreach (var item in ExamList)
+                    {
+                        et.T_Exam.Remove(item);
+                    }
+                    #endregion
+                    #region 抽奖分组表
+                    var LotteryGroupList = et.T_LotteryGroup;
+                    foreach (var item in LotteryGroupList)
+                    {
+                        et.T_LotteryGroup.Remove(item);
+                    }
+                    #endregion
+                    #region 抽奖组员表
+                    var LotteryGroupMemberList = et.T_LotteryGroupMember;
+                    foreach (var item in LotteryGroupMemberList)
+                    {
+                        et.T_LotteryGroupMember.Remove(item);
+                    }
+                    #endregion
+                    #region 抽奖记录表
+                    var T_LotteryResultList = et.T_LotteryResult;
+                    foreach (var item in T_LotteryResultList)
+                    {
+                        et.T_LotteryResult.Remove(item);
+                    }
+                    #endregion
+                    #region 试题表
+                    var QuestionList = et.T_Question;
+                    foreach (var item in QuestionList)
+                    {
+                        et.T_Question.Remove(item);
+                    }
+                    #endregion
+                    #region 成绩表
+                    var ScoreList = et.T_Score;
+                    foreach (var item in ScoreList)
+                    {
+                        et.T_Score.Remove(item);
+                    }
+                    #endregion
+                    #region 学生表
+                    var StudentList = et.T_Students;
+                    foreach (var item in StudentList)
+                    {
+                        et.T_Students.Remove(item);
+                    }
+                    #endregion        
+                    et.SaveChanges();
+                    base.fin_r = base.success_r;
+                }
+            }
+            catch (Exception ex)
+            {
+                base.fin_r.Value = ex.Message;
+            }
+            return JsonR(JsonRequestBehavior.AllowGet);
+        }
+        #endregion
+        #endregion
+
 
         #region 个人设置
         /// <summary>

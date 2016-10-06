@@ -1,10 +1,5 @@
 ﻿@Styles.Render("~/bundles/sweetalert/css")
 @Scripts.Render("~/bundles/sweetalert/js")
-
-<style type="text/css">
-
-</style>
-
 <div class="container-fluid">
     <div class="panel panel-default">
         <div class="panel-heading panel-headicon"><i class="fa fa-cog"></i> <h5>系统设置</h5></div>
@@ -36,12 +31,20 @@
                     <p class="color-lightred"><b class="color-red">注意：</b>设置班级名称会影响到其他模块..</p>
                     <ul class="list-group" id="class-list"></ul>
                 </div>
-            </div><!-- /.row -->
+            </div>
+            <div class="row margin_tb_5">
+                <div class="col-sm-8 col-sm-offset-2">
+                    <button type="button" class="btn btn-lg btn-block btn-primary" id="btn-destroyDb">
+                        <i class="fa fa-trash"></i>
+                        清除本系统数据
+                    </button>
+                    <p class="margin_tb_5 color-lightred"><span class="text-bold color-red"> 注意：</span>点击将会格式化本系统的所有数据，请慎点！</p>
+                </div>
+            </div>
         </div>
 
     </div>
 </div>
-
 
 <script type="text/javascript">
     window.curlocation = ['系统管理', '系统设置'];
@@ -145,6 +148,33 @@
                     Sclass: { ClassName: $("#txt_class_name").val() },
                     operatype: "add"
                 });
+        });
+
+        $("#btn-destroyDb").click(function () {
+            swal({
+                title: "确认清空所有数据?",
+                text: "一旦清空无法恢复，千万不要手抖啊!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "是",
+                cancelButtonText: "否",
+                closeOnConfirm: false
+            }, function () {
+                $.web.get(document.weburl + "XT/DbDestroy").done(function (xhr) {
+                    switch (xhr.Ret.Key) {
+                        case "success":
+                            swal("操作成功", "1s后将跳转到登录界面", "success");
+                            setTimeout(function () {
+                                window.location.replace(document.weburl + "Login/Index");
+                            },500);
+                            break;
+                        case "error":
+                            swal("操作失败", xhr.Ret.Value, "error");
+                            break;
+                    }
+                });
+            });
         });
     });
 
