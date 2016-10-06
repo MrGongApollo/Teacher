@@ -202,7 +202,7 @@ namespace teacher.web.Controllers
                         #endregion
                         #region 删除
                         case "delete":
-                            T_Question _QS = context.T_Question.FirstOrDefault(q => q.QuestionID == q.QuestionID);
+                            T_Question _QS = context.T_Question.FirstOrDefault(q => q.QuestionID == qs.QuestionID);
                             if (_QS != null)
                             {
                                 context.T_Question.Remove(_QS);

@@ -378,6 +378,29 @@ namespace teacher.web.Controllers
             return JsonR(JsonRequestBehavior.AllowGet);
         }
         #endregion
+        #region 删除抽奖记录
+        [HttpGet]
+        public ActionResult DeleteLotteryResult(string ResultID)
+        {
+            base.fin_r = base.error_r;
+            try
+            {
+                using (TeacherEntities et = new TeacherEntities())
+                {
+                    T_LotteryResult Rs=et.T_LotteryResult.FirstOrDefault(c => c.ResultID == ResultID);
+                    et.T_LotteryResult.Remove(Rs);
+                    et.SaveChanges();
+                    base.fin_r = base.success_r;
+                    return JsonR(Rs, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                base.fin_r.Value = ex.Message;
+            }
+            return JsonR(JsonRequestBehavior.AllowGet);
+        }
+        #endregion
         #endregion
         
     }
