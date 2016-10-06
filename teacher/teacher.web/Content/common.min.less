@@ -18,13 +18,13 @@
 .pad_b(@padding){padding-bottom:@padding;}
 
 
-.bg(@color){background-color: @color}
+.bg(@color){background-color: @color;}
 .bgI(@color){background-color: @color!important;}
 
-.color(@color){color: @color}
+.color(@color){color: @color;}
 .colorI(@color){color: @color!important;}
 
-
+.height(@height){height:@height;}
 
 /****************定义函数 结束*******************/
 
@@ -38,8 +38,10 @@ textarea{resize: none;}
 .font-yahei{font-family: "微软雅黑" !important;}
 .font-lishu{font-family: "隶书" !important;}
 .font-italic{font-style: italic;}
-.small{font-size: .8em;}
-.xsmall{font-size:.7em;}
+.text-sm{font-size: .8em;}
+.text-xsm{font-size:.7em;}
+.text-md{font-size:1.1em;}
+.text-lg{font-size:1.2em;}
 .text-center{text-align: center;}
 .text-bold{font-weight: bold;}
 
@@ -72,6 +74,9 @@ textarea{resize: none;}
 .padding_tb_0{.pad_t(0px);.pad_b(0px);}
 .padding_tb_5{.pad_t(5px);.pad_b(5px);}
 
+/************高度、宽度*****************/
+.h_100_p{.height(100%);}
+
 /**********通用*****************/
 .form_noempty:before {content: "*";margin-right: 2px;color: red;}
 
@@ -89,6 +94,7 @@ textarea{resize: none;}
 .bg-lightblue{.bgI(#dcf2ff);}
 .bg-darkblue{.bgI(#788BCA);}
 .bg-yellow{.bgI(yellow);}
+.bg-khaki{.bgI(#f1b61a);}
 .bg-red{.bgI(red);}
 .bg-lightred{.bgI(#fe5e5e);}
 .bg-pink{.bgI(pink);}
@@ -106,6 +112,7 @@ textarea{resize: none;}
 .color-red{.colorI(#F50D45);}
 .color-lightred{.colorI(#fe5e5e);}
 .color-yellow{.colorI(yellow);}
+.clolr-khaki{.colorI(#f1b61a);}
 .color-black{.colorI(black);}
 .color-gray{.colorI(gray);}
 
@@ -118,8 +125,8 @@ textarea{resize: none;}
 .badge-success{.bgI(#5cb85c);}
 .badge-warning{.bgI(#ed9c28);}
 .badge-danger{.bgI(#d2322d);}
-
-
+/*******************bootstrap well extend********************************************/
+.well{overflow-wrap: break-word;}
 /**************bootstrap panel extend*****************************/
 .panel {
     &.panel-default {
