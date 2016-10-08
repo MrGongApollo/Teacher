@@ -195,6 +195,7 @@ namespace teacher.web.Controllers
                     sql += string.IsNullOrEmpty(filter.StudentClass) ? "" : " AND StudentClass='" + filter.StudentClass + "'";
                     sql += string.IsNullOrEmpty(filter.StudentCode) ? "" : " AND StudentCode LIKE '%" + filter.StudentCode + "%'";
                     sql += string.IsNullOrEmpty(filter.StudentName) ? "" : " AND StudentName LIKE '%" + filter.StudentName + "%'";
+                    sql += string.IsNullOrEmpty(filter.ExamName) ? "" : " AND ExamName LIKE '%" + filter.ExamName + "%'";
                     sql += string.IsNullOrEmpty(filter.Course) ? "" : " AND Course='" + filter.Course + "'";
 
                     sql += string.IsNullOrEmpty(filter.ExamTimeStart) ? "" : " And (ExamTime>='" + filter.ExamTimeStart + "' And ExamTime<='" + DateTime.Parse(filter.ExamTimeEnd).AddDays(1).ToString("yyyy-MM-dd") + "')";
