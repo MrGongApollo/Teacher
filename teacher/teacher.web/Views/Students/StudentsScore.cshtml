@@ -45,7 +45,7 @@
                             <span class="input-group-addon">
                                 <i class="fa fa-newspaper-o"></i> 考试名称
                             </span>
-                            <input type="text" class="form-control" id="query_exam_nm" placeholder="请输入姓名" autocomplete="off" />
+                            <input type="text" class="form-control" id="query_exam_nm" placeholder="请输入考试名称" autocomplete="off" />
                         </div>
                     </div>
                     <div class="col-sm-6 margin_tb_5">
@@ -231,13 +231,11 @@
                             StudentClass: $("#query_stu_class").val() == "all" ? "" : $("#query_stu_class").val(),
                             StudentCode: $("#query_stu_no").val(),
                             StudentName: $("#query_stu_nm").val(),
+                            ExamName:$("#query_exam_nm").val(),
                             Course: $("#query_exam_course").val() == "all" ? "" : $("#query_exam_course").val(),
                             ExamTimeStart: $("#query_exam_time").val() ? $("#query_exam_time").attr("data-date-start") : "",
                             ExamTimeEnd: $("#query_exam_time").val() ? $("#query_exam_time").attr("data-date-end") : ""
                         }
-                        //Sno: $("#query_stu_no").val(),
-                        //Snm: $("#query_stu_nm").val(),
-                        //Status: $("[name='stu_StudyStatus'].btn-primary").attr("data-studystatus")
                     };
                     return queryParams;
                 },
